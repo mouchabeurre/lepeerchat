@@ -1,0 +1,62 @@
+<div *ngIf="!hadCachedRooms; else hadCachedRoomsBlock">
+  No rooms in cache
+</div>
+
+<ng-template #hadCachedRoomsBlock>
+  <div
+    class="room-check-pending"
+    *ngIf="roomsCheckedState.pending; else roomsCheckedDoneBlock"
+  >
+    Checking cached rooms validity
+    <div class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <ng-template #roomsCheckedDoneBlock>
+    <div *ngIf="!roomsCheckedState.found; else roomsCheckedFoundBlock">
+      Couldn't update cached rooms validity
+    </div>
+
+    <ng-template #roomsCheckedFoundBlock>
+      <div *ngIf="rooms.length === 0; else hasRooms">
+        No previous rooms are still live
+      </div>
+
+      <ng-template #hasRooms>
+        <div class="room-list-container">
+          <button (click)="onClearCachedRooms()" class="animated-gradient">
+            Clear history
+          </button>
+          <ul class="room-list">
+            <li *ngFor="let room of rooms" [ngClass]="'room-entry'">
+              <div>
+                <div [ngClass]="'room-details'">
+                  <span
+                    title="{{ room.roomName }} ({{ room.id }})"
+                    [ngClass]="'room-name'"
+                    >{{ room.roomName }}</span
+                  >
+                  as
+                  <span
+                    title="{{ room.username }}"
+                    [ngClass]="'room-username'"
+                    >{{ room.username }}</span
+                  >
+                </div>
+                <a
+                  [routerLink]="['/join', room.id]"
+                  skipLocationChange="true"
+                  [ngClass]="'enter-link'"
+                  >enter</a
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ng-template>
+</ng-template>

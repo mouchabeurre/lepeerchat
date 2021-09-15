@@ -1,0 +1,91 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_common-container-mixins"
+
+#main-container
+  display: flex
+  flex-direction: column
+  align-items: center
+
+  & > #about-container
+    max-width: 800px
+    padding: 20px 40px
+    margin: 20px
+    @include common-container
+
+    & > .demo-warning
+      position: relative
+      background-color: $font-color-error
+      padding: 3px 10px
+      font-weight: bold
+      border-radius: 4px
+      text-align: center
+
+    & h1
+      margin: 0 0 10px 0
+      color: #c4edff
+      font-size: $font-size-xl
+
+    & h2
+      margin: 0 0 10px 0
+
+    & > section
+      padding-left: 15px
+      margin-bottom: 20px
+
+      &#description
+
+        & > .trivia
+          padding: 10px
+          border-radius: 4px
+          background-color: #969483
+          color: #171717
+          font-size: $font-size-s
+          line-height: $font-size-l
+
+          & > .trivia-title
+            text-transform: uppercase
+            font-weight: bold
+
+          & > .span-outline
+            padding: 3px 5px
+
+      & > div:not(:first-of-type)
+        margin-top: 10px
+
+      .u-list, .o-list
+        margin: 5px 10px 5px 10px
+        padding: 0px
+        background-color: #31383c
+        border-radius: 4px
+
+      .u-list
+        list-style: none
+
+      .o-list
+        list-style: inside decimal
+
+      .u-list > li, .o-list > li
+        padding-left: 10px
+        color: #e6e6e6
+        padding: 4px 14px
+
+      .u-list > li:not(:last-child), .o-list > li:not(:last-child)
+        border-bottom: solid 1px #4a555a
+
+      .u-list > li::first-letter, .o-list > li::first-letter
+        text-transform: capitalize
+
+    & *
+      line-height: 2em
+
+  & .span-outline
+    padding: 1px 6px
+    background-color: #91a5a8
+    border-radius: 4px
+    color: #060606
+
+  & a
+    border-bottom: solid 1px #ffffff54
+
+    &:hover
+      border-bottom: solid 1px

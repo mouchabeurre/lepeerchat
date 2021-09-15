@@ -1,0 +1,85 @@
+/* You can add global styles to this file, and also import other style files */
+@use "sass:color"
+@import "./_reset"
+@import "./_variables"
+@import "./_font-faces"
+@import "./mixins/_common-container-mixins"
+@import "./mixins/_font-mixins"
+
+html
+  overflow-y: overlay
+
+body
+  @include fontSecondary
+  color: $font-color-default
+  height: 100vh
+  margin: 0
+  background-image: url("/assets/images/cross.svg"), linear-gradient(45deg, #8baaaa 0%, #ae8b9c 100%)
+  background-attachment: fixed
+
+h1
+  font-size: 2em
+
+h2
+  font-size: 1.5em
+
+h1, h2
+  font-family: Chakra Petch
+
+a
+  color: $font-color-default
+  text-decoration: none
+
+strong
+  font-weight: bold
+
+button
+  border: none
+  color: white
+  padding: 5px 7px
+  @include fontPrimary(700)
+  text-transform: uppercase
+  letter-spacing: 1px
+  transition: 250ms
+
+  &:disabled
+    color: color.invert($font-color-default)
+    font-style: italic
+    filter: grayscale(0.5)
+
+
+input[type="text"]
+  border: none
+  padding: 5px
+  @include fontSecondary()
+  color: $font-color-default
+  background-color: $background-color4
+
+input[type="checkbox"]
+  -webkit-appearance: checkbox
+
+.hidden
+  display: none
+
+*:focus
+  outline-offset: 0px
+  outline-color: #c4edff
+  outline-width: 2px
+  &.focus-outline
+    outline-style: dashed
+
+.animated-gradient
+  background-size: 120% auto
+  background-attachment: fixed
+  background-image: linear-gradient(to right, #3ab5b0 20%, #3d99be 31%, #87638d 70%)
+  &:not(:disabled):hover
+    background-position: right center
+    box-shadow: inset 0px 0px 0px 3px #f1f1f12e
+
+@keyframes blink
+  0%
+    opacity: 0.2
+  20%
+    opacity: 1
+  100%
+    opacity: 0.2

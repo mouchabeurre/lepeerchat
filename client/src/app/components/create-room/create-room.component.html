@@ -1,0 +1,83 @@
+<div class="main-container">
+  <div class="form-container">
+    <h2 class="title">Create a new room</h2>
+    <form
+      [formGroup]="fg_create"
+      (ngSubmit)="onCreateRoom()"
+      class="form"
+      autocomplete="off"
+    >
+      <div *ngIf="room_name" [ngClass]="'input-container'">
+        <div [ngClass]="'control-container'">
+          <label for="room_name">Room name</label>
+          <input
+            id="room_name"
+            [ngClass]="'focus-outline'"
+            type="text"
+            placeholder="Room name"
+            formControlName="room_name"
+          />
+        </div>
+        <ul
+          *ngIf="room_name.errors && show_error_room_name"
+          [ngClass]="'control-errors'"
+        >
+          <li *ngIf="room_name.errors.required">Required</li>
+          <li *ngIf="room_name.errors.pattern">
+            Invalid format
+          </li>
+          <li *ngIf="room_name.errors.minlength">
+            Min length is
+            {{ room_name.errors.minlength.requiredLength }} (currently
+            {{ room_name.errors.minlength.actualLength }})
+          </li>
+          <li *ngIf="room_name.errors.maxlength">
+            Max length is
+            {{ room_name.errors.maxlength.requiredLength }} (currently
+            {{ room_name.errors.maxlength.actualLength }})
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="username" [ngClass]="'input-container'">
+        <div [ngClass]="'control-container'">
+          <label for="username">Username</label>
+          <input
+            id="username"
+            [ngClass]="'focus-outline'"
+            type="text"
+            placeholder="Username"
+            formControlName="username"
+          />
+        </div>
+        <ul
+          *ngIf="username.errors && show_error_username"
+          [ngClass]="'control-errors'"
+        >
+          <li *ngIf="username.errors.required">Required</li>
+          <li *ngIf="username.errors.pattern">
+            Invalid format
+          </li>
+          <li *ngIf="username.errors.minlength">
+            Min length is
+            {{ username.errors.minlength.requiredLength }} (currently
+            {{ username.errors.minlength.actualLength }})
+          </li>
+          <li *ngIf="username.errors.maxlength">
+            Max length is
+            {{ username.errors.maxlength.requiredLength }} (currently
+            {{ username.errors.maxlength.actualLength }})
+          </li>
+        </ul>
+      </div>
+      <button
+        type="submit"
+        [disabled]="!fg_create.valid"
+        class="animated-gradient"
+        title="{{ !fg_create.valid ? 'Form is not valid' : '' }}"
+      >
+        Create
+      </button>
+    </form>
+    <div class="server-error" *ngIf="joinRoomError">{{ joinRoomError }}</div>
+  </div>
+</div>

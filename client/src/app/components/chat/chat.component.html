@@ -1,0 +1,96 @@
+<div class="chat-container">
+  <div *ngIf="!roomState; else hasInitialProps">
+    <div>Initializing chat...</div>
+  </div>
+  <ng-template #hasInitialProps>
+    <div
+      class="chat-message-list-empty"
+      *ngIf="(chatMessageSubject$ | async)?.length === 0; else hasMessageBlock"
+    >
+      <div>
+        No message recieved or sent
+      </div>
+    </div>
+    <ng-template #hasMessageBlock>
+      <ol
+        appScroller
+        [reachBottom$]="getScrollerSubjectAsObservable()"
+        class="chat-message-list"
+      >
+        <li
+          *ngFor="
+            let message of chatMessageSubject$ | async;
+            trackBy: trackMessageIndex
+          "
+          [ngClass]="{ 'chat-info-message': message.isInfo }"
+          @messageTrigger
+        >
+          <div [ngClass]="'chat-message-header'">
+            <ng-container [ngSwitch]="message.type">
+              <span
+                *ngSwitchCase="chatMessageType.USER"
+                [ngClass]="{
+                  'disconnected-author': !isUserConnected(message.authorId)
+                }"
+              >
+                <span #otherUserNameBlock>{{ message.authorName }}</span>
+                <span
+                  class="chat-message-header-self"
+                  *ngIf="message.authorId === roomState?.roomProperties.self.id"
+                  >(you)</span
+                >
+              </span>
+              <span *ngSwitchCase="chatMessageType.SPECIAL">Room</span>
+            </ng-container>
+            <span title="{{ message.date | date: 'short' }}">{{
+              message.date | date: "shortTime"
+            }}</span>
+          </div>
+          <div [ngClass]="'chat-message-body'">
+            <app-rich-message-content
+              [content]="message.content"
+            ></app-rich-message-content>
+          </div>
+          <ul
+            *ngIf="message.type !== chatMessageType.SPECIAL"
+            [ngClass]="'chat-message-seen'"
+          >
+            <ng-container
+              *ngFor="let user of roomState!.userList | orderBy: 'name':'ASC'"
+            >
+              <li
+                @seenTrigger
+                *ngIf="
+                  user.id !== roomState?.roomProperties.self.id &&
+                  user.lastRecievedMessageId === message.id &&
+                  user.id !== message.authorId
+                "
+                title="recieved by {{ user.name }}"
+              >
+                {{ spliceUnicode(user.name) }}
+              </li>
+            </ng-container>
+          </ul>
+        </li>
+      </ol>
+    </ng-template>
+    <div class="chat-message-editor">
+      <form [formGroup]="fg_send" (ngSubmit)="onSendMessage()">
+        <textarea
+          type="text"
+          [ngClass]="'focus-outline'"
+          placeholder="Type your message here"
+          formControlName="message"
+          (keydown.enter)="onSendMessage($event)"
+        ></textarea>
+        <button
+          type="submit"
+          class="animated-gradient"
+          [disabled]="!fg_send.valid"
+        >
+          Send
+        </button>
+      </form>
+    </div>
+  </ng-template>
+</div>

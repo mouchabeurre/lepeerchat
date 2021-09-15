@@ -1,0 +1,88 @@
+<div *ngIf="roomState" class="room-info-container">
+  <div class="room-header">
+    <div class="room-name">{{ roomState.roomProperties.name }}</div>
+    <button
+      *ngIf="
+        isSelfUserOwner()
+      "
+      class="room-manage"
+      title="Open room manager"
+      (click)="onOpenManager()"
+    ></button>
+  </div>
+  <app-room-manager
+    *ngIf="isSelfUserOwner() && showManager"
+    (closeManager)="onCloseManager()"
+  >
+  </app-room-manager>
+  <div class="room-users">
+    <ul class="room-user-list">
+      <li
+        *ngFor="let user of roomState.userList | orderBy: 'name':'ASC'"
+        class="room-user"
+      >
+        <div>
+          <div class="user-name" title="{{ user.name }}">{{ user.name }}</div>
+          <div
+            [ngClass]="{
+              'user-statuses': true,
+              'self-statuses': user.id === roomState.roomProperties.self.id
+            }"
+          >
+            <ng-container
+              *ngIf="
+                user.id === roomState.roomProperties.self.id;
+                else otherUserBlock
+              "
+            >
+              <div>(you)</div>
+            </ng-container>
+            <ng-template #otherUserBlock>
+              <ng-container [ngSwitch]="user.connectionState.status">
+                <div
+                  *ngSwitchCase="userConnectionStatus.CONNECTING"
+                  class="connecting"
+                  title="Pairing in progress"
+                ></div>
+                <div
+                  *ngSwitchCase="userConnectionStatus.CONNECTED"
+                  class="connected"
+                  title="Pairing completed"
+                ></div>
+                <div
+                  *ngSwitchCase="userConnectionStatus.DISCONNECTED"
+                  class="disconnected"
+                  title="Pairing failed"
+                ></div>
+              </ng-container>
+              <ng-container [ngSwitch]="user.connectionState.dataChannel">
+                <div
+                  *ngSwitchCase="true"
+                  class="connected"
+                  title="Connected to chat"
+                ></div>
+                <div
+                  *ngSwitchCase="false"
+                  class="disconnected"
+                  title="Not connected to chat"
+                ></div>
+              </ng-container>
+              <ng-container [ngSwitch]="user.connectionState.media !== null">
+                <div
+                  *ngSwitchCase="true"
+                  class="connected"
+                  title="Streaming media"
+                ></div>
+                <div
+                  *ngSwitchCase="false"
+                  class="disconnected"
+                  title="Not streaming media"
+                ></div>
+              </ng-container>
+            </ng-template>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

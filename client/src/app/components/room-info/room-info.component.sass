@@ -1,0 +1,89 @@
+@import "../../../styles/mixins/_font-mixins"
+
+.room-info-container
+  height: 100%
+
+  & > .room-header
+    position: fixed
+    top: 0
+    left: 66px
+    height: 30px
+    padding: 0 10px
+    margin: 8px 0
+    display: flex
+    align-items: center
+    box-sizing: border-box
+    box-shadow: 0 3px 8px 0px #00000070
+    background-image: linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%)
+
+    & > .room-name
+      @include fontPrimary(700)
+      font-size: 1.25em
+
+    & > .room-manage
+      height: 15px
+      width: 15px
+      background-image: url("/assets/images/gear.svg")
+      background-color: transparent
+      background-repeat: no-repeat
+      background-origin: content-box
+      padding: 2px
+      box-sizing: content-box
+      border-radius: 50%
+      margin-left: 10px
+      outline: none
+      background-color: white
+      box-shadow: 0 0 0 1px white
+
+      &:hover
+        filter: invert(1)
+        box-shadow: none
+
+  & > .room-users
+    height: 100%
+    background-color: #13131380
+    border: solid 1px #d0d0d0
+    box-shadow: 0 3px 8px 0px #000000b8
+
+    &> .room-user-list
+      height: 100%
+      overflow-y: auto
+
+      & > .room-user
+        padding: 9px
+        height: 60px
+        box-sizing: border-box
+        border-bottom: solid 1px #d0d0d0
+        background-color: #131313
+
+        & > div
+          display: flex
+          flex-direction: column
+
+          & > .user-name
+            font-size: 1.25em
+            text-overflow: ellipsis
+            overflow: hidden
+            height: 20px
+            text-align: center
+            font-weight: bold
+
+          & > .user-statuses
+            height: 20px
+            display: flex
+            align-items: center
+            justify-content: space-around
+            margin-top: 3px
+
+            &:not(.self-statuses) > div
+              height: 5px
+              width: 10px
+              border-radius: 3px
+              background-color: #d25471
+              padding: 2px
+              transition: background-color 250ms ease-out
+
+              &.connecting
+                background-color: #d2a254
+              &.connected
+                background-color: #54d275

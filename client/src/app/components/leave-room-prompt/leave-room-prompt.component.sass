@@ -1,0 +1,39 @@
+@import "../../../styles/mixins/_common-container-mixins"
+
+.leave-prompt-container
+  width: 480px
+  z-index: 21
+  @include common-container
+
+  & > .title
+    color: #ffe0c4
+
+  & > .leave-prompt-description
+    & *::first-letter
+      text-transform: capitalize
+
+    & > div
+      & > p
+        &:not(:first-child)
+          margin-top: 10px
+
+        & > .leave-prompt-room-name
+          padding: 1px 6px
+          background-color: #91a5a8
+          color: black
+          border-radius: 4px
+
+    & > .leave-intent-prompt
+      display: flex
+      align-items: center
+      margin-top: 20px
+      color: $font-color-off-white
+      font-style: italic
+
+  & > .leave-prompt-action
+    margin-top: 10px
+    display: flex
+    justify-content: flex-end
+
+    & > button:not(:first-of-type)
+      margin-left: 20px

@@ -1,0 +1,93 @@
+<div class="main-container">
+  <div class="form-container">
+    <h2 class="title">Join a room</h2>
+    <div class="sub-title">
+      Room ID:
+      <pre>{{ roomId }}</pre>
+    </div>
+
+    <div *ngIf="roomFoundState.pending; else roomFoundDoneBlock">
+      Checking room existence
+    </div>
+
+    <ng-template #roomFoundDoneBlock>
+      <div
+        *ngIf="
+          !roomFoundState.found || fg_join.errors?.lostRoom;
+          else roomExistsBlock
+        "
+      >
+        The room you are trying to access doesn't exist anymore.
+        <a routerLink="/create" [ngClass]="'link-create'">Create one</a>
+      </div>
+
+      <ng-template #roomExistsBlock>
+        <form
+          *ngIf="!oldUsername; else hasOldUsernameBlock"
+          [formGroup]="fg_join"
+          (ngSubmit)="onJoinRoom()"
+          class="form"
+          autocomplete="off"
+        >
+          <div *ngIf="username" [ngClass]="'input-container'">
+            <div [ngClass]="'control-container'">
+              <label for="username">Username</label>
+              <input
+                id="username"
+                [ngClass]="'focus-outline'"
+                type="text"
+                placeholder="Username"
+                formControlName="username"
+              />
+            </div>
+            <div
+              *ngIf="username.errors && show_error_username"
+              [ngClass]="'control-errors'"
+            >
+              <div *ngIf="username.errors.required">Required</div>
+              <div *ngIf="username.errors.pattern">
+                Invalid format
+              </div>
+              <div *ngIf="username.errors.minlength">
+                Min length is
+                {{ username.errors.minlength.requiredLength }} (currently
+                {{ username.errors.minlength.actualLength }})
+              </div>
+              <div *ngIf="username.errors.maxlength">
+                Max length is
+                {{ username.errors.maxlength.requiredLength }} (currently
+                {{ username.errors.maxlength.actualLength }})
+              </div>
+              <div *ngIf="username.errors.usernameAvailable">
+                Another peer already uses this username
+              </div>
+              <div *ngIf="username.errors.oldUsernameMismatch">
+                You cannot use a different username
+              </div>
+            </div>
+          </div>
+          <button
+            type="submit"
+            [disabled]="!fg_join.valid"
+            class="animated-gradient"
+            title="{{ !fg_join.valid ? 'Form is not valid' : '' }}"
+          >
+            Join
+          </button>
+        </form>
+        <ng-template #hasOldUsernameBlock>
+          <div class="auto-join">
+            Automatically joining as
+            <span class="username">{{ oldUsername }}</span>
+            <div [ngClass]="'loader'">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </ng-template>
+        <div class="server-error" *ngIf="joinRoomError">{{ joinRoomError }}</div>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>

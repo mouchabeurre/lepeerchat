@@ -1,0 +1,57 @@
+<div class="wip-ribbon">
+  <div title="Work In Progress">WIP</div>
+</div>
+<app-navbar></app-navbar>
+<div
+  [ngClass]="'main-container'"
+  *ngIf="connectionState.pending; else connectionDoneBlock"
+>
+  <div [ngClass]="'connecting'">
+    Connecting to server
+    <div [ngClass]="'loader'">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</div>
+
+<ng-template #connectionDoneBlock>
+  <ng-container
+    *ngIf="connectionState.response"
+    [ngSwitch]="connectionState.response.status"
+  >
+    <div
+      *ngSwitchCase="connectionStatus.SUCCESS"
+      [@routerAnimation]="prepareRoute(outlet)"
+    >
+      <router-outlet #outlet="outlet"></router-outlet>
+    </div>
+
+    <div *ngSwitchCase="connectionStatus.ERROR" [ngClass]="'main-container'">
+      <div class="error-container">
+        <h2 class="title">An error occured</h2>
+        <div class="error-description">
+          The application couldn't establish a connection with the server
+          because of the following reason:
+        </div>
+        <div [ngClass]="'error-type'">
+          <ng-container [ngSwitch]="connectionState.response.error">
+            <ng-container *ngSwitchCase="socketErrorType.CLOSED">
+              The connection was reset.
+            </ng-container>
+            <ng-container *ngSwitchCase="socketErrorType.TIMEOUT">
+              The server took too long the respond.
+            </ng-container>
+            <ng-container *ngSwitchCase="socketErrorType.REFUSED">
+              The server is unreachable.
+            </ng-container>
+          </ng-container>
+        </div>
+        <button class="retry-button animated-gradient" (click)="reconnect()">
+          Retry connecting
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

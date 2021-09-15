@@ -1,0 +1,81 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_dot-loader-mixins"
+
+.room-check-pending
+  display: flex
+  align-items: baseline
+  & > *
+    margin-left: 6px
+
+  & > .loader
+    @include dot-loader()
+
+.room-list-container
+  display: flex
+  flex-direction: column
+
+  & > .room-list
+    list-style: none
+    padding: 0
+    margin: 15px 0 0 0
+    max-height: 250px
+    overflow-y: auto
+
+    & > .room-entry
+      border: solid #919ea5 1px
+      overflow: hidden
+      box-shadow: 0px 2px 3px 0px black
+
+      & > div
+        display: flex
+        justify-content: space-between
+        align-items: center
+        min-height: 40px
+        background-image: linear-gradient(to right, #868f96 0%, #596164 100%)
+
+        & > .enter-link
+          padding-left: 10px
+          padding-right: 10px
+          background-color: #c7c7c71f
+          border-left: solid #919ea5 1px
+          align-self: stretch
+          display: flex
+          align-items: center
+          text-transform: uppercase
+          font-weight: bold
+          font-size: 0.8em
+          color: #ffffffc7
+          transition: color ease 150ms, background-color ease 150ms
+
+          &:hover
+            color: $font-color-default
+            background-color: #c7c7c752
+
+          &:focus
+            outline: #c4edff 2px solid
+            outline-offset: -2px
+
+        & > .room-details
+          display: flex
+          align-items: center
+          margin: 0 5px
+          overflow: hidden
+
+          & > span
+            text-overflow: ellipsis
+            overflow: hidden
+            padding: 4px 5px
+            background-color: #272727
+            border-radius: 4px
+            max-width: 27ch
+
+            &.room-name
+              margin-right: 5px
+
+            &.room-username
+              margin-left: 5px
+
+    & > .room-entry:not(:last-child)
+      margin-bottom: 10px
+    & > .room-entry:only-child
+      margin-bottom: 10px

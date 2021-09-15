@@ -1,0 +1,187 @@
+<div id="main-container">
+  <article id="about-container">
+    <h1 class="title">About Le Peer Chat</h1>
+    <div class="demo-warning">
+      IMPORTANT: this website is still being built
+    </div>
+    <section id="description">
+      <h2>Description</h2>
+      <div class="description">
+        <span class="span-outline">Le Peer Chat</span> is an experimental
+        project about <strong>decentralizing communications</strong>. The
+        application leverages the
+        <a
+          target="_blank"
+          href="https://en.wikipedia.org/wiki/WebRTC"
+          title="Web Real-Time Communication"
+          >WebRTC</a
+        >
+        technology to enable sharing textual, vocal or video data in a
+        <span class="span-outline">peer-to-peer</span> manner. As a result,
+        paired users of the application can directly communicate with each
+        other, without the need for their data to be relayed by a central
+        server.
+      </div>
+      <div id="requirements" class="requirements">
+        The project (loosely) follows a set of requirements (unordered):
+        <ul class="u-list">
+          <li>no registration needed</li>
+          <li>peer-to-peer communications</li>
+          <li>seamless pairing</li>
+          <li>fairly easy to use</li>
+          <li>free service (to the extent of the hosting server's capacity)</li>
+          <li>
+            secure™ (more on that
+            <a routerLink="./" fragment="security">later</a>)
+          </li>
+          <li>free (<a target="_blank" href="">source code</a>)</li>
+        </ul>
+      </div>
+      <div class="trivia">
+        <span class="trivia-title">Trivia</span>: in french, the word
+        <span class="span-outline">peer</span> is homonymous with
+        <span class="span-outline">pire</span>, which translates to
+        <span class="span-outline">worst</span> in english, which makes this
+        website's name a lot more apporpriate!
+      </div>
+    </section>
+    <section id="usage">
+      <h2>Usage</h2>
+      <div class="basic-usage">
+        In order to communicate with another user, one must:
+        <ol class="o-list">
+          <li><a routerLink="/create">create a new room</a></li>
+          <li>
+            generate an invitation and share it via a third party (see
+            <a routerLink="./" fragment="limitations">limitations</a>) with the
+            other user(s)
+          </li>
+          <li>wait for them to join the room</li>
+          <li>chat textually or vocally with everyone in the room</li>
+        </ol>
+      </div>
+      <div>
+        Since there is no registration system, the application relies on signed
+        tokens (stored locally in the navigator) to identify users upon room
+        access. That means, one can safely close or refresh the page and still
+        be able to access old rooms again (granted they are still alive).
+      </div>
+      <div>
+        Rooms are automatically discarded
+        <span class="span-outline">30 minutes</span> after the
+        <strong>last</strong> user left the room. Put in another way, a room
+        lives as long as there is <strong>at least 1 user connected</strong> to
+        it, but dies if this condition isn't met for
+        <span class="span-outline">30 minutes</span>.
+      </div>
+    </section>
+    <section id="security">
+      <h2>Security</h2>
+      <div>
+        Several features provide security on key points of the application:
+        <div>
+          On the technical scale:
+          <ul class="u-list">
+            <li>
+              <span class="span-outline">client</span> and
+              <span class="span-outline">server</span> only exchange data via
+              <span class="span-outline">HTTPS</span>.
+            </li>
+            <li>
+              when paired with another peer, WebRTC uses
+              <span class="span-outline">DTLS-SRTP</span> to add encryption,
+              message authentication and integrity to the data being exchanged.
+            </li>
+            <li>
+              data sent by the <span class="span-outline">client</span> to the
+              <span class="span-outline">server</span> is immediatlely and
+              strictly checked against expected structures, preventing abuses
+              from the client.
+            </li>
+            <li>
+              data sent by a <span class="span-outline">peer</span> to another
+              <span class="span-outline">peer</span> is immediatlely and
+              strictly checked against expected structures, preventing abuses
+              from other peers.
+            </li>
+          </ul>
+        </div>
+        <div>
+          On the application scale:
+          <ul class="u-list">
+            <li>
+              only 2 ways of joining a room:
+              <ul class="u-list">
+                <li>
+                  via a shared <strong>private invitation</strong> link (which
+                  is extremely difficult to guess and expires after
+                  <span class="span-outline">1h</span>).
+                </li>
+                <li>
+                  automatically, via a <strong>token</strong>, redeemed from
+                  having previously joined the room (via invitation).
+                </li>
+              </ul>
+            </li>
+            <li>
+              when successfully joining a room, a user is delivered a signed
+              <strong>token</strong>
+              automatically proving his identity in his subsequent connections
+              to the room.
+            </li>
+            <li>
+              a room can be <span class="span-outline">locked</span> to prevent
+              <strong>new</strong> invited users from joining (users that
+              previously joined the room aren't considered "new").
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section id="project-structure">
+      <h2>Project structure</h2>
+      <div>
+        The application simply consists of 2 components:
+        <ul class="u-list">
+          <li>
+            <span class="span-outline">client application</span>: the user
+            facing application. It acts as the entry point for room creation,
+            initiates user pairing and visually presents transmitted data.
+          </li>
+          <li>
+            <span class="span-outline">websocket server</span>: the
+            <span class="span-outline">client application</span>'s backend. It
+            keeps track of each room and user state, and plays the broker during
+            the WebRTC signaling process.
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section id="limitations">
+      <h2>Limitations</h2>
+      <div>
+        This web application has some limitations:
+        <ul class="u-list">
+          <li>
+            the application lacks a
+            <span class="span-outline">relay/TURN server</span>, which would
+            help in keeping the website usable for users whose connections with
+            other peers are impossible because of their firewall blocking NAT
+            traversal
+          </li>
+          <li>
+            users need a third-party communication tool in order to share a room
+            invitation link, which is inconvenient but imposed as per the
+            <a routerLink="./" fragment="requirements"
+              >"registration-free" requirement</a
+            >.
+          </li>
+          <li>
+            due to the peer-to-peer nature of the communications, the quality of
+            the streamed and recieved media will deteriorate as more peers join.
+          </li>
+        </ul>
+      </div>
+    </section>
+  </article>
+</div>

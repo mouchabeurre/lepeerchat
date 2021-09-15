@@ -1,0 +1,19 @@
+<span
+  [ngClass]="'rich-message-container'"
+  *ngFor="let element of elements; last as isLast"
+>
+  <ng-container [ngSwitch]="element.type">
+    <a
+      [ngClass]="'link'"
+      target="_blank"
+      rel="noreferrer noopener"
+      *ngSwitchCase="'link'"
+      [href]="element.data"
+      >{{ element.data }}</a
+    >
+    <ng-container *ngSwitchCase="elementType.text">{{
+      element.data
+    }}</ng-container>
+  </ng-container>
+  <ng-container *ngIf="!isLast">{{ space }}</ng-container>
+</span>

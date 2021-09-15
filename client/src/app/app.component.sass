@@ -1,0 +1,68 @@
+@import "../styles/_variables"
+@import "../styles/mixins/_dot-loader-mixins"
+
+.wip-ribbon
+  overflow: hidden
+
+  & > div
+    position: fixed
+    top: 0
+    right: 0
+    font-size: 1.2em
+    font-weight: bold
+    height: 30px
+    width: 130px
+    display: flex
+    align-items: center
+    justify-content: center
+    background-color: #191919
+    transform: translateX(39px) translateY(15px) rotate(45deg)
+    overflow: hidden
+    z-index: 100
+
+.main-container
+  display: flex
+  align-items: center
+  justify-content: center
+  height: calc(100vh - #{$nav-height})
+
+  & > .connecting
+    display: flex
+    align-items: baseline
+    font-size: $font-size-l
+    padding: 12px
+    margin: 8px
+    background-color: #2b2c2d
+    border: solid 1px #d0d0d0
+    box-shadow: 0 3px 8px 0px #000000b8
+
+    & > .loader
+      margin-left: 6px
+      @include dot-loader()
+
+  & > .error-container
+    width: 600px
+    display: flex
+    flex-direction: column
+    background-color: $background-color3
+    padding: 20px
+    border: solid 1px #d89494
+    box-shadow: 0 3px 4px 1px #292f31
+
+    & > .title
+      margin: 0 0 20px 0
+      color: #ffc4c4
+
+    & > .error-description
+      line-height: $font-size-l
+
+    & > .error-type
+      margin-top: 10px
+      font-weight: bold
+      padding: 5px 7px
+      background-color: #564040
+      border-radius: 3px
+
+.retry-button
+  align-self: center
+  margin-top: 15px

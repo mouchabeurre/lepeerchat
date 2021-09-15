@@ -1,0 +1,132 @@
+<app-backdrop-overlay
+  @managerOverlayTrigger
+  (closeEmitter)="onCloseManager()"
+  [zIndex]="10"
+>
+  <div #roomManagerContainer #modal class="room-manager-container">
+    <ng-container *ngIf="roomProperties; else noRoomPropertiesBlock">
+      <button
+        (click)="onCloseManager()"
+        class="room-manager-close"
+        title="Close the room manager"
+      >
+        close
+      </button>
+      <div class="title">Manage the room</div>
+      <div class="room-manager-invite">
+        <div class="room-manager-section-title">Invite other peers</div>
+        <div class="room-manager-section-body">
+          <button
+            (click)="onGenerateInvitation()"
+            [disabled]="generatedInvitation.pending"
+            class="generate-invitation animated-gradient"
+            title="Generate a new invitation"
+          >
+            generate new invitation
+          </button>
+          <div class="current-invitation">
+            <input
+              type="text"
+              readonly
+              [formControl]="invitationControl"
+              placeholder="Select an invitation to show its link"
+            />
+            <button
+              (click)="onCopyLinkToClipboard()"
+              [disabled]="!invitationControl.value || clipboardCopyPending"
+              class="animated-gradient"
+              title="Copy invitation link to clipboard"
+            >
+              copy
+            </button>
+          </div>
+          <div *ngIf="invitations" class="room-manager-invitations">
+            <ng-container
+              *ngIf="invitations.length > 0; else noInvitationsBlock"
+            >
+              <ul class="invitation-list">
+                <li
+                  *ngFor="
+                    let prevInvitation of invitations
+                      | orderBy: 'issueDate':'DESC';
+                    index as index;
+                    count as count
+                  "
+                  [ngClass]="{
+                    'selected-invitation':
+                      prevInvitation.link === selectedInvitation?.link
+                  }"
+                  (click)="onSelectInvitation(prevInvitation)"
+                  (keydown)="onSelectInvitation(prevInvitation, $event)"
+                  tabindex="0"
+                >
+                  <div>
+                    <div>invitation {{ count - index }}</div>
+                    <div>
+                      <div>
+                        Generated
+                        <span
+                          title="{{ prevInvitation.issueDate | date: 'short' }}"
+                          >{{
+                            prevInvitation.issueDate | timeFrom: nowDate
+                          }}</span
+                        >
+                        ago
+                      </div>
+                      <div>
+                        Valid for
+                        <span
+                          title="{{ prevInvitation.expiresAt | date: 'short' }}"
+                          >{{
+                            prevInvitation.expiresAt | timeFrom: nowDate
+                          }}</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </ng-container>
+            <ng-template #noInvitationsBlock>
+              <div class="no-invitations">
+                No invitations in cache
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="room-manager-lock">
+        <div class="room-manager-section-title">Lock the room</div>
+        <div class="room-manager-section-body">
+          <div>
+            Locking the room prevents new peers from joining using an
+            invitation.
+          </div>
+          <div class="room-manager-toggle-container">
+            <div>State:</div>
+            <div class="room-lock-state">
+              {{ roomProperties.locked ? "locked" : "unlocked" }}
+            </div>
+            <div
+              (click)="onToggleLockState()"
+              (keydown)="onToggleLockState($event)"
+              title="Toggle the room lock state"
+              [ngClass]="{
+                'room-lock-switch': true,
+                'lock-active': roomProperties.locked,
+                'toggle-disable': toggleLock.pending
+              }"
+              tabindex="0"
+            >
+              <div class="switch-handle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #noRoomPropertiesBlock>
+      <div>An error occured</div>
+      <div>Coulnd't retrieve the room state</div>
+    </ng-template>
+  </div>
+</app-backdrop-overlay>

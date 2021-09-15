@@ -1,0 +1,115 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_font-mixins"
+@import "../../../styles/mixins/_common-container-mixins"
+
+.room-manager-container
+  width: 500px
+  position: relative
+  z-index: 11
+  @include common-container
+
+  & > .room-manager-close
+    position: absolute
+    background-color: $font-color-error
+    top: 5px
+    right: 5px
+
+  & .room-manager-section-title
+    @include fontPrimary()
+    font-size: $font-size-l
+    margin-bottom: 10px
+
+  .room-manager-section-body
+    display: flex
+    flex-direction: column
+    padding: 5px
+    background-color: #3c4042
+
+  & > .room-manager-invite
+    & > .room-manager-section-body
+      & > .current-invitation
+        display: flex
+        margin-top: 8px
+
+        & > input
+          flex-grow: 2
+          border-bottom: solid #697980 1px
+          background-color: #ffffff00
+
+      & > .room-manager-invitations
+        margin-top: 8px
+
+        & > .invitation-list
+          max-height: 140px
+          overflow-y: auto
+
+          & > li
+            cursor: pointer
+            padding: 5px
+            background-color: #596164
+            &:focus
+              outline: #c4edff 2px solid
+              outline-offset: -2px
+
+            & > div
+              display: flex
+              align-items: center
+
+              & > div
+                &:first-child
+                  font-size: 1.125em
+                  text-transform: uppercase
+                  border-right: solid 1px #2b2c2d
+                  padding-right: 10px
+                  margin-left: 5px
+                &:last-child
+                  margin-left: 10px
+
+            &:not(:first-child)
+              margin-top: 3px
+            &:not(.selected-invitation):hover
+              background-color: #6e7c82
+            &.selected-invitation
+              background-color: #51b19f
+
+  & > .room-manager-lock
+    & > .room-manager-section-title
+      margin-top: 20px
+
+    & > .room-manager-section-body
+      & > .room-manager-toggle-container
+        display: flex
+        align-items: center
+        margin-top: 10px
+
+        & > .room-lock-state
+          margin-left: 5px
+          color: #fdd051
+          font-weight: 600
+          width: 60px
+          text-align: center
+
+        & > .room-lock-switch
+          margin-left: 10px
+          height: 15px
+          width: 40px
+          background-color: #797b7b
+          padding: 3px
+          transition: 150ms
+          border-radius: 4px
+          &.lock-active
+            background-color: #51b19f
+
+            & > .switch-handle
+              transform: translateX(100%)
+          &.toggle-disable
+            pointer-events: none
+            filter: contrast(0.4)
+
+          & > .switch-handle
+            height: 100%
+            width: 50%
+            background-color: #dedede
+            transition: 150ms
+            box-shadow: 0 0 12px 0px #000000b0
+            border-radius: 3px

@@ -1,0 +1,32 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_centered-container-mixins"
+@import "../../../styles/mixins/_common-container-mixins"
+@import "../../../styles/mixins/_font-mixins"
+
+.main-container
+  @include centered-container
+
+  & > .home
+    display: flex
+    align-items: center
+    justify-content: space-around
+    width: 950px
+
+    & > .nav-separator
+      @include fontPrimary(500, italic)
+      filter: drop-shadow(0px 1px 1px #0000007f)
+      font-size: $font-size-xl
+
+    & > .nav-container
+      @include common-container
+
+      & > .cached-rooms-title
+        margin-bottom: 15px
+
+      &.nav-join
+        min-width: 270px
+        max-width: 400px
+
+    .title
+      font-size: $font-size-xl
+      font-weight: bold

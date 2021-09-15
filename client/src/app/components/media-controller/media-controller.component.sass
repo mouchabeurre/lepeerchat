@@ -1,0 +1,100 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_font-mixins"
+@import "../../../styles/mixins/_common-container-mixins"
+
+.open-media-controller-button
+  height: 20px
+  padding: 3px 6px
+  box-shadow: 0 3px 8px 0px #000000b8
+  box-sizing: content-box
+  display: flex
+  align-items: center
+  color: black
+  overflow: hidden
+  background-color: #6cf3da
+  &:hover
+    background-color: #3af1ce
+  &::before
+    width: 20px
+    height: 20px
+    margin-right: 10px
+    display: block
+    content: url("/assets/images/manage-media.svg")
+
+.media-controller-selector-modal
+  width: 500px
+  position: relative
+  z-index: 11
+  @include common-container
+
+  & > .room-manager-close
+    position: absolute
+    background-color: $font-color-error
+    top: 5px
+    right: 5px
+
+  & > form
+    display: flex
+    flex-direction: column
+
+    & > .media-controller-selector
+      display: flex
+
+      & > .selector-control
+        flex-grow: 1
+        max-width: 50%
+        box-sizing: border-box
+        &:not(:first-child)
+          padding-left: 5px
+        &:not(:last-child)
+          padding-right: 5px
+
+        & > .selector-control-title
+          font-weight: 600
+          margin-bottom: 5px
+          text-transform: uppercase
+
+        & > .selector-control-section
+          display: flex
+          &:not(:first-child)
+            margin-top: 5px
+
+          & > select
+            flex-grow: 1
+            margin-left: 10px
+            max-width: 140px
+
+    & > .media-controller-selection-preview
+      display: flex
+      border-radius: 4px
+      background-color: #4b4c4e
+      margin-top: 10px
+
+      & > div
+        display: flex
+        flex-direction: column
+        align-items: flex-start
+        padding: 15px
+        width: 50%
+        box-sizing: border-box
+        overflow: hidden
+        text-overflow: ellipsis
+        &:last-child
+          border-left: 2px #2b2c2d
+          border-left-style: dashed
+
+        & > .media-controller-selection-reset
+          background-color: #5b5e63
+          border: solid 1px #7e828a
+          font-size: 0.7em
+          margin-top: 5px
+          transition: 150ms
+          &:hover
+            background-color: #6d727b
+            border: solid 1px #4b4c4e
+
+    & > .media-controller-player-feedback
+      margin-top: 10px
+
+    & > .media-controller-submit
+      margin-top: 10px

@@ -1,0 +1,216 @@
+<div class="media-controller-selector-container">
+  <button
+    (click)="onOpenSelector()"
+    class="open-media-controller-button"
+    title="open stream manager"
+  >
+  stream
+  </button>
+  <app-backdrop-overlay
+    (closeEmitter)="onCloseSelector()"
+    [zIndex]="10"
+    *ngIf="showSelector"
+  >
+    <div #modal class="media-controller-selector-modal">
+      <button
+        (click)="onCloseSelector()"
+        class="room-manager-close"
+        title="Close the room manager"
+      >
+        close
+      </button>
+      <div class="title">Compose your stream</div>
+      <form
+        [formGroup]="fg_mediaDeviceSelector"
+        (ngSubmit)="onUpdateShareState()"
+      >
+        <div class="media-controller-selector">
+          <div class="selector-control audio-control">
+            <div class="selector-control-title">Audio</div>
+            <div class="selector-control-section">
+              <ng-container
+                *ngIf="
+                  availableMediaDevices.audio$ | async as devices;
+                  else emptyDeviceListBlock
+                "
+              >
+                <label for="audio-device-selector">Audio device</label>
+                <select id="audio-device-selector" formControlName="audio">
+                  <option [value]="noneKey">None</option>
+                  <option *ngFor="let device of devices" [ngValue]="device">
+                    <span *ngIf="device.label; else noLabelDeviceBlock">{{
+                      device.label
+                    }}</span>
+                  </option>
+                </select>
+              </ng-container>
+            </div>
+          </div>
+          <div class="selector-control video-control" formGroupName="fg_video">
+            <div class="selector-control-title">Video</div>
+            <div class="selector-control-section">
+              <label for="video-stream-source-selector">Video source</label>
+              <select
+                #videoStreamSourceSelector
+                id="video-stream-source-selector"
+                formControlName="source"
+              >
+                <option [value]="noneKey">None</option>
+                <option [value]="mediaVideoType.CAMERA">Camera</option>
+                <option [value]="mediaVideoType.SCREEN_CAPTURE">Screen</option>
+              </select>
+            </div>
+            <div class="selector-control-section">
+              <ng-container [ngSwitch]="videoStreamSourceSelector.value">
+                <ng-container *ngSwitchCase="mediaVideoType.CAMERA">
+                  <ng-container
+                    *ngIf="
+                      availableMediaDevices.video$ | async as devices;
+                      else emptyDeviceListBlock
+                    "
+                  >
+                    <label for="video-stream-camera-selector"
+                      >Camera device</label
+                    >
+                    <select
+                      id="video-stream-camera-selector"
+                      formControlName="camera"
+                    >
+                      <option *ngFor="let device of devices" [ngValue]="device">
+                        <span *ngIf="device.label; else noLabelDeviceBlock">{{
+                          device.label
+                        }}</span>
+                      </option>
+                    </select>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="mediaVideoType.SCREEN_CAPTURE">
+                  <label for="video-stream-capture-selector"
+                    >Capture constraints</label
+                  >
+                  <select
+                    id="video-stream-capture-selector"
+                    formControlName="capture"
+                  >
+                    <option
+                      [value]="displayMediaSurfaceType.APPLICATION"
+                      title="capture all of the windows of an application"
+                    >
+                      Application
+                    </option>
+                    <option
+                      [value]="displayMediaSurfaceType.BROWSER"
+                      title="capture a single browser tab"
+                    >
+                      Browser
+                    </option>
+                    <option
+                      [value]="displayMediaSurfaceType.WINDOW"
+                      title="capture a single window"
+                    >
+                      Window
+                    </option>
+                    <option
+                      [value]="displayMediaSurfaceType.MONITOR"
+                      title="capture the entire screen"
+                    >
+                      Monitor
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="media-controller-selection-preview">
+          <div class="audio-selection-preview">
+            <ng-container
+              *ngIf="audio_source_device !== null; else noDeviceSelectedBlock"
+            >
+              <div>
+                Recorder
+                <ng-container
+                  *ngIf="
+                    audio_source_device.label.length !== 0;
+                    else noLabelDeviceBlock
+                  "
+                >
+                  {{ audio_source_device.label }}
+                </ng-container>
+              </div>
+            </ng-container>
+            <button
+              [ngClass]="{
+                'media-controller-selection-reset': true,
+                'hidden': audio_source_device === null
+              }"
+              type="button"
+              (click)="onResetSelector('audio')"
+            >
+              Reset
+            </button>
+          </div>
+          <div class="video-selection-preview">
+            <ng-container
+              *ngIf="
+                video_source_device !== null || video_source_capture !== null;
+                else noDeviceSelectedBlock
+              "
+            >
+              <ng-container [ngSwitch]="video_source_type">
+                <div *ngSwitchCase="mediaVideoType.CAMERA">
+                  Camera:
+                  <ng-container
+                    *ngIf="
+                      video_source_device!.label.length !== 0;
+                      else noLabelDeviceBlock
+                    "
+                  >
+                    {{ video_source_device!.label }}
+                  </ng-container>
+                </div>
+                <div *ngSwitchCase="mediaVideoType.SCREEN_CAPTURE">
+                  Screen capture: {{ video_source_capture }}
+                </div>
+              </ng-container>
+            </ng-container>
+            <button
+              [ngClass]="{
+                'media-controller-selection-reset': true,
+                'hidden':
+                  video_source_device === null && video_source_capture === null
+              }"
+              type="button"
+              (click)="onResetSelector('video')"
+            >
+              Reset
+            </button>
+          </div>
+          <ng-template #noDeviceSelectedBlock>
+            <div>No device selected</div>
+          </ng-template>
+        </div>
+        <div class="media-controller-player-feedback">
+          <label for="media-controller-self-player-control"
+            >View own stream</label
+          >
+          <input
+            type="checkbox"
+            id="media-controller-self-player-control"
+            [formControl]="showSelfPlayerControl"
+          />
+        </div>
+        <button
+          type="submit"
+          [disabled]="!fg_mediaDeviceSelector.valid"
+          class="media-controller-submit animated-gradient"
+        >
+          {{ has_stream ? "update" : "share" }} stream
+        </button>
+      </form>
+    </div>
+  </app-backdrop-overlay>
+</div>
+
+<ng-template #emptyDeviceListBlock> No compatible device found </ng-template>
+<ng-template #noLabelDeviceBlock> Unknown device </ng-template>

@@ -1,0 +1,35 @@
+<div class="media-player-grid-container">
+  <ng-container *ngIf="roomState; else noRoomStateBlock">
+    <ul
+      *ngIf="
+        peers_with_stream.length > 0 || show_self_player;
+        else noRoomStreamsBlock
+      "
+      class="peer-stream-container"
+    >
+      <li *ngIf="show_self_player">
+        <app-media-player
+          [peer]="roomState.selfUser"
+          [isSelfUser]="true"
+        ></app-media-player>
+      </li>
+      <li *ngFor="let peer of peers_with_stream">
+        <app-media-player [peer]="peer"></app-media-player>
+      </li>
+    </ul>
+    <div class="media-controller-container">
+      <app-media-controller
+        (showSelfPlayer)="onShowSelfPlayer($event)"
+        (streamSelfMedia)="onStreamSelfMedia($event)"
+      ></app-media-controller>
+    </div>
+    <ng-template #noRoomStreamsBlock>
+      <div class="media-player-info-center">No peer currently streaming</div>
+    </ng-template>
+  </ng-container>
+  <ng-template #noRoomStateBlock>
+    <div class="media-player-info-center">
+      Loading room streams...
+    </div>
+  </ng-template>
+</div>

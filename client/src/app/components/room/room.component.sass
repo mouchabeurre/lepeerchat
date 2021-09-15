@@ -1,0 +1,80 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_common-container-mixins"
+@import "../../../styles/mixins/_dot-loader-mixins"
+
+$room-name-height: 48px
+$room-manager-height-default: 125px
+$room-manager-height-invitation: 184px
+$offset-top: $nav-height + 8px
+
+.room-state-pending
+  display: flex
+  align-items: center
+  justify-content: center
+  height: calc(100vh - #{$nav-height})
+
+  & > div
+    display: flex
+    align-items: baseline
+    font-size: $font-size-l
+    padding: 12px
+    margin: 8px
+    background-color: #2b2c2d
+    border: solid 1px #d0d0d0
+    box-shadow: 0 3px 8px 0px #000000b8
+
+    & > .loader
+      margin-left: 6px
+      @include dot-loader()
+
+.room-state-not-found
+  display: flex
+  align-items: center
+  justify-content: center
+  height: calc(100vh - #{$nav-height})
+
+  & > div
+    width: 480px
+    @include common-container
+    background-color: $background-color3
+    border: solid 1px #d89494
+
+    & > .title
+      color: #ffc4c4
+
+.room-container
+  margin: 0 8px 8px 8px
+  display: grid
+  column-gap: 10px
+  grid-template-columns: 100px 1fr 1fr
+  grid-template-rows: calc(100vh - #{$offset-top})
+  grid-template-areas: "room-info room-media room-chat"
+
+  & > .room-info
+    grid-area: room-info
+
+  & > .room-media
+    grid-area: room-media
+
+  & > .room-chat
+    grid-area: room-chat
+
+  & > .room-layout-resizer
+    position: fixed
+    height: calc(100vh - #{$offset-top})
+    cursor: ew-resize
+    background-color: #0000006b
+    display: flex
+    z-index: 3
+    justify-content: center
+    opacity: 0
+    &.room-layout-resizer-visible
+      background-color: black
+      opacity: 1
+    &:hover
+      opacity: 1
+
+    & > div
+      height: 100%
+      width: 2px
+      background-color: black

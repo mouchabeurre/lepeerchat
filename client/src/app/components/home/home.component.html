@@ -1,0 +1,14 @@
+<div class="main-container">
+  <div class="home">
+    <div [ngClass]="'nav-container nav-create'">
+      <a [ngClass]="'title'" routerLink="/create">Create a room</a>
+    </div>
+    <div class="nav-separator">or</div>
+    <div [ngClass]="'nav-container nav-join'">
+      <div class="cached-rooms-title" [ngClass]="'title'">
+        Rejoin a previous room
+      </div>
+      <app-cached-rooms></app-cached-rooms>
+    </div>
+  </div>
+</div>

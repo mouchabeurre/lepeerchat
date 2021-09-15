@@ -1,0 +1,15 @@
+@import "../_variables"
+@import "./_font-mixins"
+
+@mixin common-container
+  padding: 20px
+  background-color: #2b2c2d
+  border: solid 1px #d0d0d0
+  box-shadow: 0 3px 15px 1px #000000b8
+
+  & > .title
+    margin: 0 0 20px 0
+    color: #c4ffef
+    letter-spacing: 3px
+    @include fontPrimary(500)
+    font-size: $font-size-xl

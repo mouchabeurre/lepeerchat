@@ -1,0 +1,34 @@
+<div class="nav-container">
+  <button
+    #navBurger
+    [ngClass]="{ 'nav-burger': true, 'nav-burger-opened': opened }"
+    (click)="onOpenMenu()"
+  >
+    <div></div>
+    <div></div>
+    <div [ngClass]="{ 'nav-burger-shorter': !opened }"></div>
+  </button>
+  <ul
+    #navMenu
+    @menuTrigger
+    *ngIf="opened"
+    class="nav-menu"
+    (click)="onNavMenuClick($event)"
+  >
+    <li>
+      <a
+        routerLink="/"
+        routerLinkActive="link-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Home</a
+      >
+    </li>
+    <li>
+      <a routerLink="/create" routerLinkActive="link-active">Create</a>
+    </li>
+    <li>
+      <a routerLink="/about" routerLinkActive="link-active">About</a>
+    </li>
+  </ul>
+  <div *ngIf="opened" @overlayTrigger class="nav-menu-overlay"></div>
+</div>

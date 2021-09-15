@@ -1,0 +1,92 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_centered-container-mixins"
+@import "../../../styles/mixins/_common-container-mixins"
+@import "../../../styles/mixins/_dot-loader-mixins"
+
+.main-container
+  @include centered-container
+
+  & > .form-container
+    min-width: 400px
+    @include common-container
+
+    & > .sub-title
+      font-size: $font-size-s
+      margin-bottom: 10px
+      color: $font-color-off-white
+      display: flex
+      align-items: center
+
+      & > pre
+        margin: 0 0 0 10px
+
+      & + *
+        margin-top: 20px
+
+    & .link-create
+      border-bottom: solid 1px #ffffff54
+
+      &:hover
+        border-bottom: solid 1px
+
+    & > .form
+      display: flex
+      flex-direction: column
+
+      & > .input-container
+        margin-bottom: 10px
+
+        & > .control-container
+          display: flex
+          align-items: center
+          justify-content: space-between
+          align-self: center
+
+          & > label
+            font-size: 1em
+
+          & > input
+            font-size: 1em
+            border: none
+            border-bottom: solid #697980 1px
+            background-color: #ffffff00
+            color: white
+            padding: 5px
+            width: 60%
+
+            &::placeholder
+              color: $font-color-input-placeholder
+
+        & > .control-errors
+          list-style: none
+          margin: 8px 0 0 0
+          padding: 8px 0 0 0
+          text-align: end
+          color: $font-color-error
+          border-top: solid 2px
+
+    & > .auto-join
+      display: flex
+      align-items: baseline
+      font-size: $font-size-ml
+
+      & > *
+        margin-left: 6px
+
+      & > .username
+        padding: 5px 8px
+        background-color: #00000073
+        border-radius: 5px
+
+      & > .loader
+        @include dot-loader()
+
+    & > .server-error
+      margin: 8px 0 0 0
+      padding: 8px 0 0 0
+      border-top: solid 2px
+      text-align: end
+      color: $font-color-error
+
+      &::first-letter
+        text-transform: uppercase

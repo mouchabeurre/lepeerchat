@@ -1,0 +1,120 @@
+@import "../../../styles/_variables"
+@import "../../../styles/mixins/_font-mixins"
+
+.chat-container
+  height: 100%
+  display: flex
+  flex-direction: column
+
+  & > .chat-message-list-empty
+    flex-grow: 1
+    display: flex
+    justify-content: center
+    align-items: flex-start
+
+    & > div
+      margin-top: 20px
+      font-style: italic
+      color: #dadada
+      background-color: #2b2c2d
+      padding: 10px
+
+  & > .chat-message-list
+    display: flex
+    flex-direction: column
+    flex-grow: 1
+    list-style: none
+    margin: 0 0 15px 0
+    padding: 0
+    overflow-y: auto
+
+    & > .chat-info-message
+      background-color: initial
+      box-shadow: none
+      color: $font-color-off-white
+      margin-bottom: 0
+
+      & > .chat-message-header > span:first-child
+        font-style: italic
+
+    & > li:not(:last-child)
+      margin-bottom: 16px
+
+    & > li:last-child
+      margin-bottom: 14px
+
+    & > li
+      margin: 0 10px
+      padding: 10px
+      position: relative
+      background-color: #2b2c2d
+      border-bottom: solid 1px #d0d0d0
+      box-shadow: 0 3px 8px 0px #000000b8
+
+      & > .chat-message-header
+        display: flex
+        justify-content: space-between
+
+        & > span:first-child
+          font-weight: bold
+
+          & > .chat-message-header-self
+            margin-left: 5px
+            font-weight: 300
+
+        & > span:last-child
+          font-size: $font-size-xs
+          color: $font-color-off-white
+
+      & > .chat-message-body
+        margin-top: 4px
+        min-height: 18px
+
+      & > .chat-message-seen
+        display: flex
+        position: absolute
+        right: 0
+        margin-right: 5px
+
+        & > li
+          margin-left: 5px
+          color: $font-color-default
+          font-size: $font-size-xs
+          font-weight: 300
+          padding: 4px
+          background-color: #1b1b1b
+          border-radius: 4px
+          text-overflow: ellipsis
+          overflow: hidden
+          max-width: 40px
+          min-width: 12px
+          height: 12px
+          text-align: center
+          box-shadow: 0px 1px 3px #000000ab
+
+  & > .chat-message-editor
+    background-color: #2b2c2d9c
+    padding: 5px
+
+    & > form
+      display: flex
+      width: 100%
+      align-items: center
+
+      & > textarea
+        resize: vertical
+        flex-grow: 1
+        margin-top: 0px
+        margin-bottom: 0px
+        height: 24px
+        min-height: 30px
+        max-height: 100px
+        border: none
+        background-color: rgb(47, 55, 58)
+        color: white
+        padding: 5px
+        @include fontSecondary
+        font-size: $font-size-m
+
+      & > button
+        margin-left: 5px

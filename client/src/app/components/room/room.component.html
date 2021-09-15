@@ -1,0 +1,57 @@
+<div
+  class="room-state-pending"
+  *ngIf="roomFoundState.pending; else roomFoundDoneBlock"
+>
+  <div>
+    Fetching room data
+    <div class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</div>
+
+<ng-template #roomFoundDoneBlock>
+  <div
+    class="room-state-not-found"
+    *ngIf="!roomFoundState.found; else roomExistsBlock"
+  >
+    <div>
+      <div class="title">An error occured</div>
+      <div>
+        Couldn't retrieve room data
+      </div>
+    </div>
+  </div>
+
+  <ng-template #roomExistsBlock>
+    <app-leave-room-prompt
+      *ngIf="showLeavePrompt"
+      [roomId]="roomProperties!.id"
+      [roomName]="roomProperties!.name"
+      (closeLeavePrompt)="onCloseLeavePrompt($event)"
+      class="confirm-modal"
+    ></app-leave-room-prompt>
+    <div #roomContainer class="room-container" (mousemove)="onResize($event)">
+      <div
+        #resizer
+        (mousedown)="onStartResize($event)"
+        (mouseup)="onEndResize($event)"
+        [ngClass]="{
+          'room-layout-resizer': true,
+          'room-layout-resizer-visible': resizerState.resizing
+        }"
+      >
+        <div></div>
+      </div>
+      <app-room-info class="room-info"> </app-room-info>
+      <div #mediaController class="room-media">
+        <app-media-player-grid></app-media-player-grid>
+      </div>
+      <div #chat class="room-chat">
+        <app-chat></app-chat>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

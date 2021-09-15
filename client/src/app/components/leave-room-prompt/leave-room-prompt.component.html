@@ -1,0 +1,35 @@
+<app-backdrop-overlay
+  (closeEmitter)="onCloseLeavePrompt()"
+  [zIndex]="20"
+>
+  <div #modal class="leave-prompt-container">
+    <div class="title">Confirm leaving room</div>
+    <section class="leave-prompt-description">
+      <div>
+        <p>
+          you are about to leave the room
+          <span class="leave-prompt-room-name">{{ roomName }}</span>
+        </p>
+        <p>
+          if you continue you won't be able to recieve communications anymore
+        </p>
+      </div>
+      <div class="leave-intent-prompt">
+        <label for="leave-intent-prompt-control">don't prompt next time</label>
+        <input
+          type="checkbox"
+          id="leave-intent-prompt-control"
+          [formControl]="preventPromptControl"
+        />
+      </div>
+    </section>
+    <div class="leave-prompt-action">
+      <button (click)="onActionConfirm()" class="animated-gradient">
+        continue
+      </button>
+      <button (click)="onActionCancel()" class="animated-gradient">
+        cancel
+      </button>
+    </div>
+  </div>
+</app-backdrop-overlay>

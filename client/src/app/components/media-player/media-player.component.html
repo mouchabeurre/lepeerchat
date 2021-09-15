@@ -1,0 +1,36 @@
+<div
+  [ngClass]="{
+    'media-player-container': true,
+    'self-media-player': isSelfUser
+  }"
+  tabindex="-1"
+>
+  <div class="media-player-overlay"></div>
+  <div class="media-player-title" title="{{ peer.name }}">
+    {{ peer.name }}
+  </div>
+  <video #localStream autoplay></video>
+  <div *ngIf="has_audio" class="media-player-volume-container">
+    <button
+      (click)="onToggleMute()"
+      [disabled]="volumeState.value === 0"
+      [ngClass]="{
+        'media-player-volume': true,
+        'media-player-volume-on': !volumeState.muted,
+        'media-player-volume-off': volumeState.muted
+      }"
+      title="{{ volumeState.muted ? 'Unmute' : 'Mute' }} player"
+    ></button>
+    <input
+      type="range"
+      min="0"
+      max="100"
+      step="5"
+      [formControl]="volumeControl"
+      [ngClass]="{
+        'volume-slider': true,
+        'volume-slider-muted': volumeState.muted
+      }"
+    />
+  </div>
+</div>

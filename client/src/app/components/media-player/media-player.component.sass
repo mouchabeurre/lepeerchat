@@ -1,0 +1,157 @@
+$reveal-transition: 150ms ease
+$z-index-base: 1
+$z-index-top: 2
+
+@mixin slider-runnable-track
+  background-size: 120% auto
+  background-attachment: fixed
+  background-image: linear-gradient(120deg, #43e97b 0%, #38f9d7 100%)
+  border: solid 1px #000000
+  width: 100%
+  height: 6.4px
+  box-sizing: content-box
+  cursor: pointer
+  transition: background-position $reveal-transition
+
+@mixin slider-thumb
+  width: 8px
+  height: 17px
+  background: #000000
+  border: 1.1px solid #d0d0d0
+  cursor: pointer
+
+@mixin slider-hover-runnable-track
+  background-position: right center
+
+@mixin slider-focus-thumb
+  background-color: #ffffff
+  border: 1.1px solid #000000
+
+@mixin slider-focus-runnable-track
+  border: solid 1px #c4edff
+
+.media-player-container
+  box-sizing: border-box
+  position: relative
+  display: flex
+  border: solid 1px #d0d0d0
+  background-color: #282d2f
+  overflow: hidden
+  height: 100%
+  &:focus
+    outline-offset: -1px
+    outline-width: 1px
+    outline-style: solid
+  &.self-media-player
+    border: solid 1px #131313
+
+  &:hover, &:focus, &:focus-within
+    & > .media-player-overlay
+      opacity: 0.4
+
+    & > .media-player-title
+      opacity: 1
+      filter: none
+      background-color: #000000c2
+
+    & > .media-player-volume-container
+      opacity: 0.7
+      &:hover, &:focus-within
+        opacity: 1
+
+  & > .media-player-overlay
+    position: absolute
+    z-index: $z-index-base
+    height: 100%
+    width: 100%
+    opacity: 0
+    background-color: #000000
+    transition: $reveal-transition
+
+  & > .media-player-title
+    position: absolute
+    top: 10px
+    left: 10px
+    z-index: $z-index-top
+    opacity: 0.7
+    padding: 6px
+    filter: drop-shadow(0px 0px 3px black)
+    transition: $reveal-transition
+
+  & > video
+    width: 100%
+
+  & > .media-player-volume-container
+    position: absolute
+    bottom: 0
+    right: 0
+    display: flex
+    justify-content: space-between
+    opacity: 0
+    z-index: $z-index-top
+    padding: 10px
+    background-color: #000000
+    transition: $reveal-transition
+
+    & > .media-player-volume
+      height: 20px
+      width: 20px
+      background-color: transparent
+      background-repeat: no-repeat
+      background-origin: content-box
+      padding: 2px
+      box-sizing: content-box
+      text-align: center
+      cursor: pointer
+      transition: background-image $reveal-transition
+      &.media-player-volume-on
+        background-image: url("/assets/images/volume-on.svg")
+      &.media-player-volume-off
+        background-image: url("/assets/images/volume-mute.svg")
+
+    & > .volume-slider
+      width: 130px
+      margin: 4.8px 0
+      margin-left: 10px
+      background-color: transparent
+      -webkit-appearance: none
+
+      &.volume-slider-muted
+        filter: grayscale(0.5)
+
+      &:hover
+        &::-webkit-slider-runnable-track
+          @include slider-hover-runnable-track
+
+        &::-moz-range-track
+          @include slider-hover-runnable-track
+
+      &:focus
+        outline: none
+        &::-webkit-slider-runnable-track
+          @include slider-hover-runnable-track
+          @include slider-focus-runnable-track
+
+        &::-moz-range-track
+          @include slider-hover-runnable-track
+          @include slider-focus-runnable-track
+
+        &::-webkit-slider-thumb
+          @include slider-focus-thumb
+
+        &::-moz-range-thumb
+          @include slider-focus-thumb
+
+      &::-webkit-slider-runnable-track
+        @include slider-runnable-track
+
+      &::-webkit-slider-thumb
+        margin-top: -4.8px
+        -webkit-appearance: none
+        @include slider-thumb
+
+      &::-moz-range-track
+        @include slider-runnable-track
+
+      &::-moz-range-thumb
+        @include slider-thumb
