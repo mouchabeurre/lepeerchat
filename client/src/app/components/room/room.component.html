@@ -19,9 +19,7 @@
   >
     <div>
       <div class="title">An error occured</div>
-      <div>
-        Couldn't retrieve room data
-      </div>
+      <div>Couldn't retrieve room data</div>
     </div>
   </div>
 
@@ -33,11 +31,16 @@
       (closeLeavePrompt)="onCloseLeavePrompt($event)"
       class="confirm-modal"
     ></app-leave-room-prompt>
-    <div #roomContainer class="room-container" (mousemove)="onResize($event)">
+    <div
+      #roomContainer
+      class="room-container"
+      (document:mousemove)="onResize($event)"
+      (document:mouseup)="onEndResize()"
+    >
       <div
         #resizer
         (mousedown)="onStartResize($event)"
-        (mouseup)="onEndResize($event)"
+        (dblclick)="onCenterResizer()"
         [ngClass]="{
           'room-layout-resizer': true,
           'room-layout-resizer-visible': resizerState.resizing

@@ -1,10 +1,8 @@
 import { Component, OnInit } from "@angular/core"
 import { CacheManagerService } from "src/app/injectables/cache-manager.service"
-import {
-  MessageRoomExistsInOk,
-  MessageRoomExistsInErr
-} from "src/app/utils/api"
 import { SocketService } from "src/app/injectables/socket.service"
+import { MessageInErr } from "src/app/routing/api"
+import { MessageRoomExistsInOk } from "src/app/routing/interfaces/room-exists"
 
 interface CachedRoom {
   roomName: string
@@ -53,14 +51,14 @@ export class CachedRoomsComponent implements OnInit {
     Promise.all(allPromises)
       .then(results => {
         for (let i = 0; i < results.length; i++) {
-          if (!results[i].data.exists) {
+          if (!results[i].exists) {
             this._cacheManagerService.deleteRoom(cachedRooms[i].id)
           }
         }
         this.rooms = this._buildRoomsFromCache()
         this.roomsCheckedState = { found: true, pending: false }
       })
-      .catch((err: MessageRoomExistsInErr) => {
+      .catch((err: MessageInErr) => {
         this.roomsCheckedState = { found: false, pending: false }
         console.log("Couldn't sync cached rooms with server state:", err.error)
       })

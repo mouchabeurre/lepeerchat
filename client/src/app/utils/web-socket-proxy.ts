@@ -6,7 +6,7 @@ import {
   MessageIn,
   MessageOut,
   MessageType
-} from "./api"
+} from "../routing/api"
 import { SOCKET_RESPONSE_TIMEOUT, SOCKET_OPEN_TIMEOUT } from "./constants"
 
 export enum SocketState {
@@ -20,6 +20,11 @@ export enum EventType {
   OPEN,
   CLOSE,
   ERROR
+}
+
+export enum KeepAlive {
+  Ping = "ping",
+  Pong = "pong"
 }
 
 export interface SocketEvent {
@@ -63,8 +68,12 @@ export class WebSocketProxy {
     }
 
     this._socket.onmessage = event => {
-      const message: InternalSocketMessage<MessageIn> = JSON.parse(event.data)
-      this._onMessageSubject$.next(message)
+      if (event.data === KeepAlive.Ping) {
+        this._socket.send(KeepAlive.Pong)
+      } else {
+        const message: InternalSocketMessage<MessageIn> = JSON.parse(event.data)
+        this._onMessageSubject$.next(message)
+      }
     }
   }
 

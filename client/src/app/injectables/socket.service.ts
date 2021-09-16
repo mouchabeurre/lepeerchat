@@ -6,85 +6,92 @@ import {
 } from "../utils/web-socket-proxy"
 import { environment } from "src/environments/environment"
 import { Observable } from "rxjs"
-import { first } from "rxjs/operators"
 import {
   MessageIn,
   MessageInOk,
   MessageInErr,
   MessageOut,
-  DataOut,
-  MessageCreateRoomInOk,
-  MessageCreateRoomInErr,
+  MessageType
+} from "../routing/api"
+import {
   MessageCreateRoomOut,
-  MessageType,
-  MessageUsernameValidInOk,
-  MessageUsernameValidInErr,
+  MessageCreateRoomInOk
+} from "../routing/interfaces/create-room"
+import {
   MessageUsernameValidOut,
-  MessageGenerateInvitationInOk,
-  MessageGenerateInvitationInErr,
+  MessageUsernameValidInOk
+} from "../routing/interfaces/username-valid"
+import {
   MessageGenerateInvitationOut,
-  MessageJoinRoomInOk,
-  MessageJoinRoomInErr,
+  MessageGenerateInvitationInOk
+} from "../routing/interfaces/generate-invitation"
+import {
   MessageJoinRoomOut,
-  MessageGetRoomInOk,
-  MessageGetRoomInErr,
+  MessageJoinRoomInOk
+} from "../routing/interfaces/join-room"
+import {
   MessageGetRoomOut,
-  MessageOfferInOk,
-  MessageOfferInErr,
-  MessageOfferOut,
-  MessageCandidateInOk,
-  MessageCandidateInErr,
+  MessageGetRoomInOk
+} from "../routing/interfaces/get-room"
+import { MessageOfferOut, MessageOfferInOk } from "../routing/interfaces/offer"
+import {
   MessageCandidateOut,
-  MessageAnswerInOk,
-  MessageAnswerInErr,
-  MessageAnswerOut,
-  MessageGuardInOk,
-  MessageGuardInErr,
-  MessageGuardOut,
-  MessageRoomExistsInOk,
-  MessageRoomExistsInErr,
+  MessageCandidateInOk
+} from "../routing/interfaces/candidate"
+import { MessageAnswerOut, MessageAnswerInOk } from "../routing/interfaces/answer"
+import { MessageGuardOut, MessageGuardInOk } from "../routing/interfaces/guard"
+import {
   MessageRoomExistsOut,
-  MessageLockRoomInOk,
-  MessageLockRoomInErr,
+  MessageRoomExistsInOk
+} from "../routing/interfaces/room-exists"
+import {
   MessageLockRoomOut,
-  MessageLeaveRoomInOk,
-  MessageLeaveRoomInErr,
-  MessageLeaveRoomOut
-} from "../utils/api"
-import { DataCreateRoomOut } from "../utils/interfaces/create-room"
-import { DataUsernameValidOut } from "../utils/interfaces/username-valid"
-import { DataGenerateInvitationOut } from "../utils/interfaces/generate-invitation"
-import { DataJoinRoomOut } from "../utils/interfaces/join-room"
-import { DataGetRoomOut } from "../utils/interfaces/get-room"
-import { DataOfferOut } from "../utils/interfaces/offer"
-import { DataCandidateOut } from "../utils/interfaces/candidate"
-import { DataAnswerOut } from "../utils/interfaces/answer"
-import { DataGuardOut } from "../utils/interfaces/guard"
-import { DataRoomExistsOut } from "../utils/interfaces/room-exists"
-import { DataLockRoomOut } from "../utils/interfaces/lock-room"
-import { DataLeaveRoomOut } from "../utils/interfaces/leave-room"
+  MessageLockRoomInOk
+} from "../routing/interfaces/lock-room"
+import {
+  MessageLeaveRoomOut,
+  MessageLeaveRoomInOk
+} from "../routing/interfaces/leave-room"
+
+export type OmitMessageType<T extends MessageOut> = Omit<T, "type">
 
 function isErrorMessage(message: MessageIn): message is MessageInErr {
   return !!(message as MessageInErr).error
 }
 
-interface CallableRoutesMap {
-  createRoom: (data: DataCreateRoomOut) => Promise<MessageCreateRoomInOk>
+export interface CallableRoutesMap {
+  createRoom: (
+    data: OmitMessageType<MessageCreateRoomOut>
+  ) => Promise<MessageCreateRoomInOk>
   usernameValid: (
-    data: DataUsernameValidOut
+    data: OmitMessageType<MessageUsernameValidOut>
   ) => Promise<MessageUsernameValidInOk>
   generateInvitation: (
-    data: DataGenerateInvitationOut
+    data: OmitMessageType<MessageGenerateInvitationOut>
   ) => Promise<MessageGenerateInvitationInOk>
-  joinRoom: (data: DataJoinRoomOut) => Promise<MessageJoinRoomInOk>
-  getRoom: (data: DataGetRoomOut) => Promise<MessageGetRoomInOk>
-  offer: (data: DataOfferOut) => Promise<MessageOfferInOk>
-  candidate: (data: DataCandidateOut) => Promise<MessageCandidateInOk>
-  answer: (data: DataAnswerOut) => Promise<MessageAnswerInOk>
-  guard: (data: DataGuardOut) => Promise<MessageGuardInOk>
-  roomExists: (data: DataRoomExistsOut) => Promise<MessageRoomExistsInOk>
-  lockRoom: (data: DataLockRoomOut) => Promise<MessageLockRoomInOk>
-  leaveRoom: (data: DataLeaveRoomOut) => Promise<MessageLeaveRoomInOk>
+  joinRoom: (
+    data: OmitMessageType<MessageJoinRoomOut>
+  ) => Promise<MessageJoinRoomInOk>
+  getRoom: (
+    data: OmitMessageType<MessageGetRoomOut>
+  ) => Promise<MessageGetRoomInOk>
+  offer: (data: OmitMessageType<MessageOfferOut>) => Promise<MessageOfferInOk>
+  candidate: (
+    data: OmitMessageType<MessageCandidateOut>
+  ) => Promise<MessageCandidateInOk>
+  answer: (
+    data: OmitMessageType<MessageAnswerOut>
+  ) => Promise<MessageAnswerInOk>
+  guard: (data: OmitMessageType<MessageGuardOut>) => Promise<MessageGuardInOk>
+  roomExists: (
+    data: OmitMessageType<MessageRoomExistsOut>
+  ) => Promise<MessageRoomExistsInOk>
+  lockRoom: (
+    data: OmitMessageType<MessageLockRoomOut>
+  ) => Promise<MessageLockRoomInOk>
+  leaveRoom: (
+    data: OmitMessageType<MessageLeaveRoomOut>
+  ) => Promise<MessageLeaveRoomInOk>
 }
 
 @Injectable({
@@ -97,94 +104,75 @@ export class SocketService {
 
   public send: CallableRoutesMap = {
     createRoom: data => {
-      return this._send<MessageCreateRoomInOk, MessageCreateRoomInErr>(<
-        MessageCreateRoomOut
-      >{
+      return this._send<MessageCreateRoomInOk>(<MessageCreateRoomOut>{
         type: MessageType.CREATE_ROOM,
-        data
+        ...data
       })
     },
     usernameValid: data => {
-      return this._send<MessageUsernameValidInOk, MessageUsernameValidInErr>(<
-        MessageUsernameValidOut
-      >{
+      return this._send<MessageUsernameValidInOk>(<MessageUsernameValidOut>{
         type: MessageType.USERNAME_VALID,
-        data
+        ...data
       })
     },
     generateInvitation: data => {
-      return this._send<
-        MessageGenerateInvitationInOk,
-        MessageGenerateInvitationInErr
-      >(<MessageGenerateInvitationOut>{
+      return this._send<MessageGenerateInvitationInOk>(<
+        MessageGenerateInvitationOut
+      >{
         type: MessageType.GENERATE_INVITATION,
-        data
+        ...data
       })
     },
     joinRoom: data => {
-      return this._send<MessageJoinRoomInOk, MessageJoinRoomInErr>(<
-        MessageJoinRoomOut
-      >{
+      return this._send<MessageJoinRoomInOk>(<MessageJoinRoomOut>{
         type: MessageType.JOIN_ROOM,
-        data
+        ...data
       })
     },
     getRoom: data => {
-      return this._send<MessageGetRoomInOk, MessageGetRoomInErr>(<
-        MessageGetRoomOut
-      >{
+      return this._send<MessageGetRoomInOk>(<MessageGetRoomOut>{
         type: MessageType.GET_ROOM,
-        data
+        ...data
       })
     },
     offer: data => {
-      return this._send<MessageOfferInOk, MessageOfferInErr>(<MessageOfferOut>{
+      return this._send<MessageOfferInOk>(<MessageOfferOut>{
         type: MessageType.OFFER,
-        data
+        ...data
       })
     },
     candidate: data => {
-      return this._send<MessageCandidateInOk, MessageCandidateInErr>(<
-        MessageCandidateOut
-      >{
+      return this._send<MessageCandidateInOk>(<MessageCandidateOut>{
         type: MessageType.CANDIDATE,
-        data
+        ...data
       })
     },
     answer: data => {
-      return this._send<MessageAnswerInOk, MessageAnswerInErr>(<
-        MessageAnswerOut
-      >{
+      return this._send<MessageAnswerInOk>(<MessageAnswerOut>{
         type: MessageType.ANSWER,
-        data
+        ...data
       })
     },
     guard: data => {
-      return this._send<MessageGuardInOk, MessageGuardInErr>(<MessageGuardOut>{
+      return this._send<MessageGuardInOk>(<MessageGuardOut>{
         type: MessageType.GUARD,
-        data
+        ...data
       })
     },
     roomExists: data => {
-      return this._send<MessageRoomExistsInOk, MessageRoomExistsInErr>(<
-        MessageRoomExistsOut
-      >{
+      return this._send<MessageRoomExistsInOk>(<MessageRoomExistsOut>{
         type: MessageType.ROOM_EXISTS,
-        data
+        ...data
       })
     },
     lockRoom: data => {
-      return this._send<MessageLockRoomInOk, MessageLockRoomInErr>(<
-        MessageLockRoomOut
-      >{
+      return this._send<MessageLockRoomInOk>(<MessageLockRoomOut>{
         type: MessageType.LOCK_ROOM,
-        data
+        ...data
       })
     },
     leaveRoom: data => {
-      return this._send<MessageLeaveRoomInOk, MessageLeaveRoomInErr>(<
-        MessageLeaveRoomOut
-      >{
+      return this._send<MessageLeaveRoomInOk>(<MessageLeaveRoomOut>{
         type: MessageType.LEAVE_ROOM,
         data
       })
@@ -205,15 +193,13 @@ export class SocketService {
     })
   }
 
-  private _send<Ok extends MessageInOk, Err extends MessageInErr>(
-    message: MessageOut
-  ): Promise<Ok> {
+  private _send<Ok extends MessageInOk>(message: MessageOut): Promise<Ok> {
     return new Promise((resolve, reject) => {
       this._proxy
         .send(message)
         .then(response => {
           if (isErrorMessage(response)) {
-            reject(response as Err)
+            reject(response)
           } else {
             resolve(response as Ok)
           }

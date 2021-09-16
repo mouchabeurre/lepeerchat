@@ -2,6 +2,6 @@
 .env
 dist
 build
-bundle.js
+deploy.sh
 
 client/node_modules

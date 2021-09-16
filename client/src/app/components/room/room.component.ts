@@ -19,8 +19,6 @@ export interface LeavePromptResponse {
   result: boolean
   preventPrompt?: boolean
 }
-const GRID_GUTTER_MARGIN = 10
-const RESIZER_WIDTH = GRID_GUTTER_MARGIN
 
 @Component({
   selector: "app-room",
@@ -99,21 +97,7 @@ export class RoomComponent
       )
       .subscribe({
         next: () => {
-          const mediaControllerRects = this.mediaControllerRef.nativeElement.getBoundingClientRect()
-          this._renderer.setStyle(
-            this.resizerRef.nativeElement,
-            "left",
-            `${
-              mediaControllerRects.right +
-              GRID_GUTTER_MARGIN / 2 -
-              RESIZER_WIDTH / 2
-            }px`
-          )
-          this._renderer.setStyle(
-            this.resizerRef.nativeElement,
-            "width",
-            `${RESIZER_WIDTH}px`
-          )
+          this.onCenterResizer()
         }
       })
   }
@@ -178,28 +162,52 @@ export class RoomComponent
       }
     }
   }
-  onEndResize(event: MouseEvent) {
-    const mediaControllerRects = this.mediaControllerRef.nativeElement.getBoundingClientRect()
-    const chatRects = this.chatRef.nativeElement.getBoundingClientRect()
-    const resizerRects = this.resizerRef.nativeElement.getBoundingClientRect()
-    const totalWidth = mediaControllerRects.width + chatRects.width
-    const resizerRelativeX = resizerRects.left - mediaControllerRects.left
-    const resizerFraction = resizerRelativeX / totalWidth
+  onEndResize() {
+    if (this.resizerState.resizing) {
+      const mediaControllerRects = this.mediaControllerRef.nativeElement.getBoundingClientRect()
+      const chatRects = this.chatRef.nativeElement.getBoundingClientRect()
+      const resizerRects = this.resizerRef.nativeElement.getBoundingClientRect()
+      const totalWidth = mediaControllerRects.width + chatRects.width
+      const resizerRelativeX = resizerRects.left - mediaControllerRects.left
+      const resizerFraction = resizerRelativeX / totalWidth
+      const oldTemplateColumns = window.getComputedStyle(
+        this.roomContainerRef.nativeElement
+      ).gridTemplateColumns
+      const newTemplateColumns = [
+        oldTemplateColumns.split(" ")[0],
+        `${resizerFraction}fr`,
+        `${1 - resizerFraction}fr`
+      ].join(" ")
+      this._renderer.setStyle(
+        this.roomContainerRef.nativeElement,
+        "grid-template-columns",
+        newTemplateColumns
+      )
+      this.resizerState = {
+        resizing: false
+      }
+    }
+  }
+  onCenterResizer() {
+    const roomRects = this.roomContainerRef.nativeElement.getBoundingClientRect()
     const oldTemplateColumns = window.getComputedStyle(
       this.roomContainerRef.nativeElement
     ).gridTemplateColumns
-    const newTemplateColumns = [
-      oldTemplateColumns.split(" ")[0],
-      `${resizerFraction}fr`,
-      `${1 - resizerFraction}fr`
-    ].join(" ")
-    this._renderer.setStyle(
-      this.roomContainerRef.nativeElement,
-      "grid-template-columns",
-      newTemplateColumns
-    )
-    this.resizerState = {
-      resizing: false
+    const roomInfoWidth = parseInt(oldTemplateColumns.split(" ")[0])
+    if (roomInfoWidth !== NaN) {
+      const newTemplateColumns = [`${roomInfoWidth}px`, `1fr`, `1fr`].join(" ")
+      this._renderer.setStyle(
+        this.roomContainerRef.nativeElement,
+        "grid-template-columns",
+        newTemplateColumns
+      )
+      this._renderer.setStyle(
+        this.resizerRef.nativeElement,
+        "left",
+        `${
+          (roomRects.width - roomInfoWidth) / 2 + roomInfoWidth + roomRects.left
+        }px`
+      )
     }
   }
 

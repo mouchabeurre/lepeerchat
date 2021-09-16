@@ -6,6 +6,7 @@ $room-name-height: 48px
 $room-manager-height-default: 125px
 $room-manager-height-invitation: 184px
 $offset-top: $nav-height + 8px
+$gutter-width: 10px
 
 .room-state-pending
   display: flex
@@ -45,7 +46,7 @@ $offset-top: $nav-height + 8px
 .room-container
   margin: 0 8px 8px 8px
   display: grid
-  column-gap: 10px
+  column-gap: $gutter-width
   grid-template-columns: 100px 1fr 1fr
   grid-template-rows: calc(100vh - #{$offset-top})
   grid-template-areas: "room-info room-media room-chat"
@@ -61,6 +62,7 @@ $offset-top: $nav-height + 8px
 
   & > .room-layout-resizer
     position: fixed
+    width: $gutter-width
     height: calc(100vh - #{$offset-top})
     cursor: ew-resize
     background-color: #0000006b

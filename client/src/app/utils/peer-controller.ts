@@ -1,12 +1,19 @@
 import { environment } from "src/environments/environment"
 import {
   MessageOfferInOk,
+  MessageOfferOut,
+  MessagePushOfferInOk
+} from "../routing/interfaces/offer"
+import {
   MessageCandidateInOk,
-  MessageAnswerInOk
-} from "./api"
-import { DataOfferOut, DataPushOfferInOk } from "./interfaces/offer"
-import { DataCandidateOut, DataPushCandidateInOk } from "./interfaces/candidate"
-import { DataAnswerOut, DataPushAnswerInOk } from "./interfaces/answer"
+  MessageCandidateOut,
+  MessagePushCandidateInOk
+} from "../routing/interfaces/candidate"
+import {
+  MessageAnswerInOk,
+  MessageAnswerOut,
+  MessagePushAnswerInOk
+} from "../routing/interfaces/answer"
 import { Observable, Subscription, Subject, Observer } from "rxjs"
 import {
   DataChatMessageProof,
@@ -19,6 +26,7 @@ import {
   DataAnswerMessageProof
 } from "./message-validator"
 import { isProved } from "ts-prove"
+import { CallableRoutesMap } from "../injectables/socket.service"
 
 interface CanvasElement extends HTMLCanvasElement {
   captureStream: () => MediaStream
@@ -189,7 +197,6 @@ class OtherPeer {
 
     if (initiate) {
       this._log("initiate")
-      // console.log("creating dataChannel")
       this._dataChannel = this._peerConnection.createDataChannel(this.userId)
       this._listenDataChannelEvents()
     }
@@ -489,15 +496,15 @@ class OtherPeer {
 }
 
 interface SignalingEmitters {
-  offer: (data: DataOfferOut) => Promise<MessageOfferInOk>
-  candidate: (data: DataCandidateOut) => Promise<MessageCandidateInOk>
-  answer: (data: DataAnswerOut) => Promise<MessageAnswerInOk>
+  offer: CallableRoutesMap["offer"]
+  candidate: CallableRoutesMap["candidate"]
+  answer: CallableRoutesMap["answer"]
 }
 
 interface SignalingObservables {
-  onOffer$: Observable<DataPushOfferInOk>
-  onCandidate$: Observable<DataPushCandidateInOk>
-  onAnswer$: Observable<DataPushAnswerInOk>
+  onOffer$: Observable<MessagePushOfferInOk>
+  onCandidate$: Observable<MessagePushCandidateInOk>
+  onAnswer$: Observable<MessagePushAnswerInOk>
 }
 
 export enum OtherPeerEventType {

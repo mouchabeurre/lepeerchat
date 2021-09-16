@@ -2,17 +2,11 @@ import { ReplaySubject, Subject, Observable } from "rxjs"
 import { takeUntil } from "rxjs/operators"
 import { CacheManagerService } from "../injectables/cache-manager.service"
 import { SocketService } from "../injectables/socket.service"
-import {
-  MessageIn,
-  MessagePushOfferInOk,
-  MessagePushCandidateInOk,
-  MessagePushAnswerInOk,
-  MessageType,
-  MessageInErr,
-  MessageGetRoomInOk,
-  MessageInOk
-} from "./api"
+import { MessageIn, MessageType, MessageInErr, MessageInOk } from "../routing/api"
 import { RoomDTO } from "./dto/room"
+import { MessagePushAnswerInOk } from "../routing/interfaces/answer"
+import { MessagePushCandidateInOk } from "../routing/interfaces/candidate"
+import { MessagePushOfferInOk } from "../routing/interfaces/offer"
 import { DataChannelMessageType } from "./message-validator"
 import {
   PeerController,
@@ -55,7 +49,7 @@ export type RoomProperties = Pick<
   Room,
   "id" | "name" | "ownerUsername" | "locked" | "self"
 >
-type PeerMessageInOk =
+type SignalingMessageInOk =
   | MessagePushOfferInOk
   | MessagePushCandidateInOk
   | MessagePushAnswerInOk
@@ -142,13 +136,19 @@ function getRoomsDiff(
   }
 }
 
-function isPeerMessageOk(message: MessageIn): message is PeerMessageInOk {
-  if (
-    message.type === MessageType.PUSH_OFFER ||
-    message.type === MessageType.PUSH_CANDIDATE ||
-    message.type === MessageType.PUSH_ANSWER
-  ) {
-    return true
+function isMessageInOk(message: MessageIn): message is MessageInOk {
+  return !(message as MessageInErr).error
+}
+
+function isPeerMessageOk(message: MessageIn): message is SignalingMessageInOk {
+  if (isMessageInOk(message)) {
+    if (
+      message.type === MessageType.PUSH_OFFER ||
+      message.type === MessageType.PUSH_CANDIDATE ||
+      message.type === MessageType.PUSH_ANSWER
+    ) {
+      return true
+    }
   }
   return false
 }
@@ -211,15 +211,15 @@ export class RoomState {
     if (isSocketMessageInOk(message)) {
       switch (message.type) {
         case MessageType.GET_ROOM:
-          const { room } = message.data
+          const { room } = message
           this._setRoom(getUpdatedRoom(this._room!, room))
           break
         case MessageType.PUSH_LOCK_ROOM:
-          const { locked } = message.data
+          const { locked } = message
           this._setRoom({ ...this._room!, locked })
           break
         case MessageType.PUSH_USER_CONNECTED:
-          const { user } = message.data
+          const { user } = message
           this._setRoom({
             ...this._room!,
             users: [
@@ -229,7 +229,7 @@ export class RoomState {
           })
           break
         case MessageType.PUSH_USER_DISCONNECTED:
-          const { userId } = message.data
+          const { userId } = message
           this._setRoom({
             ...this._room!,
             users: this._room!.users.filter(user => user.id !== userId)
@@ -362,7 +362,7 @@ export class RoomState {
       this._socketService.send
         .getRoom({})
         .then(response => {
-          const { room } = response.data
+          const { room } = response
           const users = room.users.map<User>(user => ({
             ...user,
             ...getUserDefaultConnectionState()
@@ -392,7 +392,7 @@ export class RoomState {
               next: this._onSocketMessage
             })
 
-          const peerMessageFiltred$ = new Observable<PeerMessageInOk>(
+          const signalingMessages$ = new Observable<SignalingMessageInOk>(
             subscriber => {
               this._socketService
                 .getMessageObservable()
@@ -417,34 +417,34 @@ export class RoomState {
             },
             {
               onOffer$: new Observable(subscriber => {
-                peerMessageFiltred$
+                signalingMessages$
                   .pipe(takeUntil(this._unsubscribeSubject$))
                   .subscribe({
                     next: message => {
                       if (message.type === MessageType.PUSH_OFFER) {
-                        subscriber.next(message.data)
+                        subscriber.next(message)
                       }
                     }
                   })
               }),
               onCandidate$: new Observable(subscriber => {
-                peerMessageFiltred$
+                signalingMessages$
                   .pipe(takeUntil(this._unsubscribeSubject$))
                   .subscribe({
                     next: message => {
                       if (message.type === MessageType.PUSH_CANDIDATE) {
-                        subscriber.next(message.data)
+                        subscriber.next(message)
                       }
                     }
                   })
               }),
               onAnswer$: new Observable(subscriber => {
-                peerMessageFiltred$
+                signalingMessages$
                   .pipe(takeUntil(this._unsubscribeSubject$))
                   .subscribe({
                     next: message => {
                       if (message.type === MessageType.PUSH_ANSWER) {
-                        subscriber.next(message.data)
+                        subscriber.next(message)
                       }
                     }
                   })

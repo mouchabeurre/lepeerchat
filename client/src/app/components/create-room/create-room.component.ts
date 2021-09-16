@@ -7,7 +7,7 @@ import {
   UsernameConstraintList,
   RoomNameConstraintList
 } from "src/app/utils/constants"
-import { ErrorType, MessageCreateRoomInErr } from "src/app/utils/api"
+import { ErrorType, MessageInErr } from "src/app/routing/api"
 
 @Component({
   selector: "app-create-room",
@@ -67,8 +67,7 @@ export class CreateRoomComponent implements OnInit {
         roomName: this.fg_create.get("room_name")!.value,
         username: this.fg_create.get("username")!.value
       })
-      .then(response => {
-        const { roomId, username, userId, roomName, token } = response.data
+      .then(({ roomId, username, userId, roomName, token }) => {
         this._cacheManagerService.saveRoom(roomId, {
           roomName,
           token,
@@ -76,7 +75,7 @@ export class CreateRoomComponent implements OnInit {
         })
         this._router.navigate(["room", roomId])
       })
-      .catch((err: MessageCreateRoomInErr) => {
+      .catch((err: MessageInErr) => {
         if (err.error.type !== ErrorType.Validation) {
           this.joinRoomError = err.error.message
         }

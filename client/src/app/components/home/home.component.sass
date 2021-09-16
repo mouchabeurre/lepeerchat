@@ -3,6 +3,25 @@
 @import "../../../styles/mixins/_common-container-mixins"
 @import "../../../styles/mixins/_font-mixins"
 
+.home-title-container
+  position: absolute
+  display: flex
+  justify-content: center
+  left: 0
+  right: 0
+  pointer-events: none
+
+  & > .home-title
+    font-family: Just Me Again Down Here
+    font-size: 8em
+    padding-bottom: 22px
+    background-image: linear-gradient(54deg, #ffe9f3, #cffffb)
+    background-size: 100%
+    -webkit-background-clip: text
+    -moz-background-clip: text
+    -webkit-text-fill-color: transparent
+    -moz-text-fill-color: transparent
+
 .main-container
   @include centered-container
 

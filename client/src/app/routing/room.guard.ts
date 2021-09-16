@@ -8,7 +8,7 @@ import {
 } from "@angular/router"
 import { SocketService } from "../injectables/socket.service"
 import { CacheManagerService } from "../injectables/cache-manager.service"
-import { MessageGuardInErr, ErrorType } from "../utils/api"
+import { MessageInErr, ErrorType } from "./api"
 
 @Injectable({
   providedIn: "root"
@@ -41,8 +41,7 @@ export class RoomGuard implements CanActivate {
         })
         .catch(err => {
           if (
-            (err as MessageGuardInErr).error?.type ===
-            ErrorType.DoesntBelongRoom
+            (err as MessageInErr).error?.type === ErrorType.DoesntBelongRoom
           ) {
             this._router.navigate(["/join", roomId], {
               skipLocationChange: true

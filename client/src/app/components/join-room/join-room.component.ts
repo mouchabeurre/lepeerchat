@@ -1,24 +1,19 @@
 import { Component, OnInit, OnDestroy } from "@angular/core"
-import { ActivatedRoute, Router, ParamMap } from "@angular/router"
-import { SocketService } from "src/app/injectables/socket.service"
+import { ActivatedRoute, Router } from "@angular/router"
+import {
+  OmitMessageType,
+  SocketService
+} from "src/app/injectables/socket.service"
 import { CacheManagerService } from "src/app/injectables/cache-manager.service"
 import {
   FormBuilder,
   FormGroup,
   AsyncValidatorFn,
   AbstractControl,
-  ValidatorFn,
-  ValidationErrors
+  ValidatorFn
 } from "@angular/forms"
-import { DataJoinRoomOut } from "src/app/utils/interfaces/join-room"
-import {
-  Subject,
-  Subscription,
-  Observable,
-  of,
-  BehaviorSubject,
-  timer
-} from "rxjs"
+import { MessageJoinRoomOut } from "src/app/routing/interfaces/join-room"
+import { Subject, Observable, timer } from "rxjs"
 import {
   debounceTime,
   distinctUntilChanged,
@@ -29,8 +24,8 @@ import {
   takeUntil
 } from "rxjs/operators"
 import { UsernameConstraintList } from "src/app/utils/constants"
-import { MessageJoinRoomInErr, MessageType, ErrorType } from "src/app/utils/api"
-import { DataUsernameValidOut } from "src/app/utils/interfaces/username-valid"
+import { MessageInErr, ErrorType } from "src/app/routing/api"
+import { MessageUsernameValidOut } from "src/app/routing/interfaces/username-valid"
 
 @Component({
   selector: "app-join-room",
@@ -123,7 +118,7 @@ export class JoinRoomComponent implements OnInit, OnDestroy {
         switchMap(value => {
           return new Observable<boolean>(subscriber => {
             const token = this._cacheManagerService.getRoom(this.roomId)?.token
-            let data: DataUsernameValidOut
+            let data: OmitMessageType<MessageUsernameValidOut>
             if (token) {
               data = { roomId: this.roomId, username: value, token }
             } else {
@@ -132,7 +127,7 @@ export class JoinRoomComponent implements OnInit, OnDestroy {
             this._socketService.send
               .usernameValid(data)
               .then(() => subscriber.next(true))
-              .catch((err: MessageJoinRoomInErr) => {
+              .catch((err: MessageInErr) => {
                 if (err.error.type === ErrorType.InvalidToken) {
                   const cachedRoom = this._cacheManagerService.getRoom(
                     this.roomId
@@ -156,11 +151,10 @@ export class JoinRoomComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _joinRoom(payload: DataJoinRoomOut) {
+  private _joinRoom(payload: OmitMessageType<MessageJoinRoomOut>) {
     this._socketService.send
       .joinRoom(payload)
-      .then(response => {
-        const { token, username, roomName, roomId } = response.data
+      .then(({ token, username, roomName, roomId }) => {
         const cachedRoom = this._cacheManagerService.getRoom(roomId)
         this._cacheManagerService.saveRoom(roomId, {
           ...cachedRoom,
@@ -170,7 +164,7 @@ export class JoinRoomComponent implements OnInit, OnDestroy {
         })
         this._router.navigate(["/room", roomId])
       })
-      .catch((err: MessageJoinRoomInErr) => {
+      .catch((err: MessageInErr) => {
         if (err.error.type !== ErrorType.Validation) {
           this.joinRoomError = err.error.message
         }
@@ -188,10 +182,10 @@ export class JoinRoomComponent implements OnInit, OnDestroy {
         } else {
           this._socketService.send.roomExists({ roomId }).then(response => {
             this.roomFoundState = {
-              found: response.data.exists,
+              found: response.exists,
               pending: false
             }
-            if (!response.data.exists) {
+            if (!response.exists) {
             } else {
               this.oldUsername =
                 this._cacheManagerService.getRoom(roomId)?.username ?? null
@@ -214,8 +208,10 @@ export class JoinRoomComponent implements OnInit, OnDestroy {
                         if (this.fg_join.valid) {
                           this.fg_join.disable({ emitEvent: false })
                           this._joinRoom({
-                            username: this.username!.value,
-                            token
+                            creditentials: {
+                              username: this.username!.value,
+                              token
+                            }
                           })
                         }
                       })
@@ -228,10 +224,12 @@ export class JoinRoomComponent implements OnInit, OnDestroy {
                         .subscribe({
                           next: username => {
                             this._joinRoom({
-                              key,
-                              password,
-                              username,
-                              roomId
+                              creditentials: {
+                                key,
+                                password,
+                                username,
+                                roomId
+                              }
                             })
                           }
                         })

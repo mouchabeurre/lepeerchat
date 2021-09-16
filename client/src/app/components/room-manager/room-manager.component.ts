@@ -64,9 +64,8 @@ export class RoomManagerComponent implements OnInit, OnDestroy {
       | { status: RequestStatus.SUCCESS }
   }
   clipboardCopyPending: boolean
-  @ViewChild("roomManagerContainer") roomManagerContainerRef: ElementRef<
-    HTMLDivElement
-  >
+  @ViewChild("roomManagerContainer")
+  roomManagerContainerRef: ElementRef<HTMLDivElement>
   @Output() closeManager: EventEmitter<void>
 
   constructor(
@@ -101,8 +100,7 @@ export class RoomManagerComponent implements OnInit, OnDestroy {
     }
     this._socketService.send
       .generateInvitation({})
-      .then(response => {
-        const { key, password, expireAt } = response.data.invitation
+      .then(({ invitation: { key, password, expireAt } }) => {
         const params = {
           k: key,
           p: password
@@ -173,8 +171,8 @@ export class RoomManagerComponent implements OnInit, OnDestroy {
     }
     this._socketService.send
       .lockRoom({ locked: !this.roomProperties!.locked })
-      .then(response => {
-        this.roomProperties!.locked = response.data.locked
+      .then(({ locked }) => {
+        this.roomProperties!.locked = locked
         this.toggleLock = {
           pending: false,
           response: { status: RequestStatus.SUCCESS }

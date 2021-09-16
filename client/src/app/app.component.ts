@@ -46,7 +46,7 @@ export class AppComponent implements OnInit, AfterViewChecked, OnDestroy {
   constructor(
     private _socketService: SocketService,
     private _router: Router,
-    private changeRef: ChangeDetectorRef
+    private _changeRef: ChangeDetectorRef
   ) {
     this._unsubscribeSubject = new Subject()
     this._restoreRoute = null
@@ -127,7 +127,7 @@ export class AppComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   ngAfterViewChecked() {
-    this.changeRef.detectChanges()
+    this._changeRef.detectChanges()
   }
 
   reconnect() {
