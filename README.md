@@ -1,8 +1,8 @@
-# Le Peer Chat
+# lepeerchat
 
 ## About 
 
-**Le Peer Chat** is a personal experimental project about decentralizing communications.
+**lepeerchat** is a personal experimental project about decentralizing communications.
 The application leverages the **WebRTC** technology to enable sharing textual, vocal or video data in a **peer-to-peer** manner.
 As a result, paired users of the application can directly communicate with each other, without the need for their data to be relayed by a central server.  
 *You can try it out on the [lepeerchat.xyz](https://www.lepeerchat.xyz) instance.*
