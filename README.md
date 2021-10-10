@@ -53,7 +53,7 @@ To install needed packages:
 
 ### Building
 
-> :warning: **As of deno `v1.14.2` bundling the server files yields a faulty executable ([#12086](https://github.com/denoland/deno/issues/12086)).**
+> :warning: **As of deno `v1.14.0` bundling the server files yields a faulty executable ([#12086](https://github.com/denoland/deno/issues/12086)).**
 
 The [`build.sh`](build.sh) convinience script builds both client and server applications. The built files will be located in the `build` directory.
 

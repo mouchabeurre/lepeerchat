@@ -1,4 +1,5 @@
 import { trigger, transition, style, query, animate } from "@angular/animations"
+import { routesData } from "./app-routing.module"
 
 const _durationDefault = 300
 const _durationLong = 400
@@ -12,7 +13,7 @@ const translateValIn = 0
 
 export const routeTransitionAnimations = [
   trigger("routerAnimation", [
-    transition("* => About", [
+    transition(`* => ${routesData.aboutPage.transitionKey}`, [
       style({ position: "relative" }),
       query(
         ":enter",
@@ -65,7 +66,7 @@ export const routeTransitionAnimations = [
         { optional: true }
       )
     ]),
-    transition("About => *", [
+    transition(`${routesData.aboutPage.transitionKey} => *`, [
       style({ position: "relative" }),
       query(
         ":enter",

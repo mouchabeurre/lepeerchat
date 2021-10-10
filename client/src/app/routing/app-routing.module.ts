@@ -9,34 +9,70 @@ import { JoinGuard } from "./join.guard"
 import { AboutComponent } from "../components/about/about.component"
 import { ComponentDeactivateGuard } from "./component-deactivate.guard"
 
+export const enum PageName {
+  HOME = "home",
+  CREATE = "create",
+  JOIN = "join",
+  ROOM = "room",
+  ABOUT = "about"
+}
+export interface PageData<T> {
+  title: string
+  transitionKey: T
+}
+export const routesData: {
+  [key in PageName as `${key}Page`]: PageData<key>
+} = {
+  homePage: {
+    title: "Home",
+    transitionKey: PageName.HOME
+  },
+  createPage: {
+    title: "Create new room",
+    transitionKey: PageName.CREATE
+  },
+  joinPage: {
+    title: "Joining a room",
+    transitionKey: PageName.JOIN
+  },
+  roomPage: {
+    title: "Room",
+    transitionKey: PageName.ROOM
+  },
+  aboutPage: {
+    title: "About",
+    transitionKey: PageName.ABOUT
+  }
+}
+
 const routes: Routes = [
   {
     path: "",
     component: HomeComponent,
-    data: { animationState: "Home" }
+    data: routesData.homePage
   },
   {
     path: "create",
     component: CreateRoomComponent,
-    data: { animationState: "Create" }
+    data: routesData.createPage
   },
   {
     path: "room/:id",
     component: RoomComponent,
     canActivate: [RoomGuard],
     canDeactivate: [ComponentDeactivateGuard],
-    data: { animationState: "Room" }
+    data: routesData.roomPage
   },
   {
     path: "join/:id",
     component: JoinRoomComponent,
     canActivate: [JoinGuard],
-    data: { animationState: "Join" }
+    data: routesData.joinPage
   },
   {
     path: "about",
     component: AboutComponent,
-    data: { animationState: "About" }
+    data: routesData.aboutPage
   },
   {
     path: "**",
@@ -47,9 +83,9 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-    anchorScrolling: "enabled",
-    relativeLinkResolution: 'legacy'
-})
+      anchorScrolling: "enabled",
+      relativeLinkResolution: "legacy"
+    })
   ],
   exports: [RouterModule]
 })

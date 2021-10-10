@@ -2,6 +2,7 @@ import { Validators } from "@angular/forms"
 
 const anythingRegex = /.*/
 
+export const BASE_TITLE = "lepeerchat"
 export const SOCKET_RESPONSE_TIMEOUT = 3000
 export const SOCKET_OPEN_TIMEOUT = 2500
 export const DATA_CHANNEL_RESPONSE_TIMEOUT = 3000

@@ -14,6 +14,10 @@ import { RoomService } from "src/app/injectables/room.service"
 import { Subject } from "rxjs"
 import { bufferCount, delay, first, takeUntil } from "rxjs/operators"
 import { roomAnimations } from "./animations"
+import { Title } from "@angular/platform-browser"
+import { ActivatedRoute } from "@angular/router"
+import { PageData, PageName } from "src/app/routing/app-routing.module"
+import { BASE_TITLE } from "src/app/utils/constants"
 
 export interface LeavePromptResponse {
   result: boolean
@@ -80,6 +84,8 @@ export class RoomComponent
     private _roomService: RoomService,
     private _socketService: SocketService,
     private _cacheManagerService: CacheManagerService,
+    private _title: Title,
+    private _activatedRoute: ActivatedRoute,
     private _renderer: Renderer2
   ) {
     this.roomFoundState = { found: false, pending: true }
@@ -112,6 +118,11 @@ export class RoomComponent
           .subscribe({
             next: props => {
               this.roomProperties = props
+              this._activatedRoute.data.subscribe(
+                ({ title }: PageData<typeof PageName>) => {
+                  this._title.setTitle(`${BASE_TITLE} | ${title} ${props.name}`)
+                }
+              )
             }
           })
         this.roomFoundState = { found: true, pending: false }

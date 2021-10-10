@@ -12,9 +12,12 @@ import {
   EventType
 } from "./utils/web-socket-proxy"
 import { routeTransitionAnimations } from "./routing/router-animations"
-import { Router, RouterOutlet } from "@angular/router"
-import { takeUntil } from "rxjs/operators"
+import { Router, RouterOutlet, RoutesRecognized } from "@angular/router"
+import { takeUntil, filter, map } from "rxjs/operators"
 import { Subject } from "rxjs"
+import { Title } from "@angular/platform-browser"
+import { PageData, PageName } from "./routing/app-routing.module"
+import { BASE_TITLE } from "./utils/constants"
 
 enum ConnectionStatus {
   SUCCESS,
@@ -46,6 +49,7 @@ export class AppComponent implements OnInit, AfterViewChecked, OnDestroy {
   constructor(
     private _socketService: SocketService,
     private _router: Router,
+    private _title: Title,
     private _changeRef: ChangeDetectorRef
   ) {
     this._unsubscribeSubject = new Subject()
@@ -124,6 +128,21 @@ export class AppComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   ngOnInit() {
     this._connect()
+    this._router.events
+      .pipe(
+        filter<RoutesRecognized>(event => event instanceof RoutesRecognized),
+        map(
+          event =>
+            (event.state.root.firstChild?.data as
+              | PageData<typeof PageName>
+              | undefined)?.title
+        )
+      )
+      .subscribe(title => {
+        if (title) {
+          this._title.setTitle(`${BASE_TITLE} | ${title}`)
+        }
+      })
   }
 
   ngAfterViewChecked() {
@@ -141,7 +160,7 @@ export class AppComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   prepareRoute(outlet: RouterOutlet) {
-    return outlet?.activatedRouteData?.animationState
+    return outlet?.activatedRouteData?.title
   }
 
   ngOnDestroy() {
