@@ -15,7 +15,7 @@ SERVER_DIR="server"
 CLIENT_DIR="client"
 
 if [[ -d "${BUILD_DIR}" ]]; then
-  rm -r "${BUILD_DIR}"/* || die "could not clear build directory [${BUILD_DIR}]"
+  rm -rf "${BUILD_DIR}"/* || die "could not clear build directory [${BUILD_DIR}]"
   echo "[+] Cleared build directory"
 else
   mkdir -p "${BUILD_DIR}" || die "could not create build directory [${BUILD_DIR}]"
@@ -32,6 +32,7 @@ echo "[+] Done building client"
 cd "${SERVER_DIR}"
 echo "[#] Bundling server..."
 deno bundle index.ts "../${BUILD_DIR}/bundle.js" || die "couldn't bundle server"
+cp .tool-versions "../${BUILD_DIR}/"
 cd - > /dev/null
 echo "[+] Done bundling server"
 echo "[#] Built files are in [${BUILD_DIR}] directory"

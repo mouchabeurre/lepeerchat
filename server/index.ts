@@ -31,7 +31,7 @@ router
       throw createHttpError(Status.NotFound)
     }
   })
-  .get("/(create|about|room)(.*)", async (context: RouterContext) => {
+  .get("/(.*)", async (context: RouterContext) => {
     await send(context, "index.html", {
       root: `${staticDir}`,
     })
